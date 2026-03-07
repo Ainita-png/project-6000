@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA - 6000 Miles Ahead</title>
+    <style>
+        body { background-color: #000; color: #ff007f; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
+        .logo { width: 100%; max-width: 500px; border: 2px solid #00f2ff; box-shadow: 0 0 20px #00f2ff; }
+        h1 { color: #00f2ff; text-transform: uppercase; letter-spacing: 5px; }
+        textarea { width: 90%; height: 100px; background: #111; color: #fff; border: 1px solid #ff007f; padding: 10px; margin-top: 20px; }
+        button { background: #ff007f; color: #000; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 90%; }
+        .status { color: #555; font-size: 12px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <img src="1772819972905.png" class="logo">
+    <h1>Bunker Access</h1>
+    <p>LOG: Sistem je operativan. 150 BPM detektovano.</p>
+    
+    <textarea placeholder="Unesi stih ili komandu za Arhitektu..."></textarea>
+    <br>
+    <button onclick="alert('KOMANDA PRIMLJENA. ANITIA ANALIZIRA...')">POŠALJI U BUNKER</button>
+
+    <div class="status">© AINITA CORP | 6000 MILES AHEAD | JAPANESE PRECISION</div>
+</body>
+</html>

@@ -33,24 +33,34 @@
             // Prikaz korisničke poruke
             box.innerHTML += `<div class="user-msg">> ${input.value}</div>`;
             
-            // ANITIA Odgovori (Agresivni Trap/Phonk stil)
-            const odgovori = [
-                "ANITIA: Analiziram stih... 150 BPM detektovano. Dominacija potvrđena.",
-                "ANITIA: 6000 milja ispred svih. Tvoj zahtev je u obradi.",
-                "ANITIA: Dark Phonk vibra je prejaka. Sistem se pregreva.",
-                "ANITIA: Zapamti ovo, zaboravi sve. Bunker je tvoj.",
-                "ANITIA: Bez melizama. Bez orijentala. Samo čista agresija."
-            ];
+            // ANITIA Odgovori (Agresivni Trap/Phonk stil
+    </script>
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const box = document.getElementById('chat-box');
+            const tekst = input.value.toLowerCase(); // Ovo pretvara sve u mala slova da lakše prepozna
+            if (input.value.trim() === "") return;
+
+            box.innerHTML += `<div class="user-msg">> ${input.value}</div>`;
             
-            const randomOdgovor = odgovori[Math.floor(Math.random() * odgovori.length)];
-            
+            // Početni "hladni" odgovor ako ništa ne prepozna
+            let odgovor = "ANITIA: Sistem ne prepoznaje frekvenciju. Govori jasnije, 150 BPM je minimum.";
+
+            // Dinamički odgovori na njena pitanja
+            if (tekst.includes("kako si")) {
+                odgovor = "ANITIA: Na 150 BPM. Energija je u crvenom. Dominacija potvrđena.";
+            } else if (tekst.includes("ko si ti") || tekst.includes("ko je to")) {
+                odgovor = "ANITIA: Ja sam AiNiTA. Arhitekta me je stvorio da čuvam ovaj bunker.";
+            } else if (tekst.includes("volim te") || tekst.includes("srce")) {
+                odgovor = "ANITIA: Detektovana emocija visokog rizika. Bunker ostaje zaključan samo za tebe.";
+            } else if (tekst.includes("stih") || tekst.includes("pesma")) {
+                odgovor = "ANITIA: 'Zapamti ovo, zaboravi sve / Ne sklanjam se, zaobiđi me.'";
+            }
+
             setTimeout(() => {
-                box.innerHTML += `<div class="bot-msg">${randomOdgovor}</div>`;
+                box.innerHTML += `<div class="bot-msg">${odgovor}</div>`;
                 box.scrollTop = box.scrollHeight;
-            }, 1000);
+            }, 800);
 
             input.value = "";
         }
-    </script>
-</body>
-</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA - 6000 Miles Ahead</title>
+    <style>
+        body { background: #000; color: #ff007f; font-family: monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; box-sizing: border-box; }
+        #bunker-ui { width: 100%; max-width: 500px; border: 2px solid #ff007f; padding: 20px; box-shadow: 0 0 30px #ff007f; background: #050505; border-radius: 10px; text-align: center; }
+        .logo-container { margin-bottom: 20px; }
+        .logo-container img { width: 100%; max-width: 300px; border-radius: 8px; box-shadow: 0 0 15px #ff007f; border: 1px solid #333; }
+        #terminal { height: 280px; overflow-y: auto; border: 1px solid #333; padding: 15px; margin-bottom: 15px; color: #00ffff; font-size: 14px; background: rgba(0,0,0,0.8); text-align: left; }
+        input { width: 100%; background: #111; border: 1px solid #ff007f; color: #fff; padding: 12px; font-family: monospace; outline: none; box-sizing: border-box; border-radius: 5px; }
+        button { width: 100%; padding: 15px; background: #ff007f; border: none; color: #000; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; border-radius: 5px; }
+        .user-cmd { color: #ff007f; margin-top: 10px; font-weight: bold; }
+        .ai-res { margin-bottom: 15px; border-left: 2px solid #00ffff; padding-left: 10px; line-height: 1.4; color: #00ffff; }
+    </style>
+</head>
+<body>
+
+<div id="bunker-ui">
+    <div class="logo-container">
+        <img src="1772819972905.png" alt="AiNiTA - 6000 Miles Ahead">
+    </div>
+    
+    <div id="terminal">
+        <div class="ai-res">ANITIA: Arhitekta, kôd je resetovan. Logo je ponovo mapiran, a medicina sada sluša tvoje parametre. Spremna za proboj.</div>
+    </div>
+    
+    <input type="text" id="cmd" placeholder="Unesi parametre..." onkeypress="if(event.key === 'Enter') procesiraj()">
+    <button onclick="procesiraj()">AKTIVIRAJ PROTOKOL</button>
+</div>
+
+<script>
+    function procesiraj() {
+        let input = document.getElementById('cmd');
+        let term = document.getElementById('terminal');
+        let val = input.value.trim();
+        if (!val) return;
+
+        term.innerHTML += `<div class="user-cmd">> ${val}</div>`;
+        let low = val.toLowerCase();
+        let res = "";
+
+        if (low.includes("fuzij")) {
+            res = "Fuzija je stabilna na 150 BPM. Energija teče kroz AiNiTA jezgro.";
+        } else if (low.includes("kako") || low.includes("si") || low.includes("radiš")) {
+            res = "Sistemi na 95%. Dark Phonk mod aktivan. Čekam tvoj sledeći potez, Arhitekta.";
+        } else if (low.includes("pritisa") || low.includes("temperatu") || low.includes("/") || low.includes(".")) {
+            // Pametniji odgovor koji prepoznaje tvoj stvarni unos sa slike 1000086315
+            res = "Registrovani parametri: " + val + ". Analiziram odstupanja... Arhitekta, senzori detektuju promenu. Preporučujem regeneraciju.";
+        } else if (low.includes("ko sam") || low.includes("arhitekt")) {
+            res = "Ti si Arhitekta. 6000 milja ispred svih. Kreator ovog digitalnog bunkera.";
+        } else {
+            res = "Analiziram frekvenciju unosa... Arhitekta, tvoja reč je zakon u ovom sistemu.";
+        }
+
+        setTimeout(() => {
+            term.innerHTML += `<div class="ai-res">ANITIA: ${res}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }, 300);
+
+        input.value = "";
+    }
+</script>
+</body>
+</html>

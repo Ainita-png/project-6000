@@ -40,13 +40,14 @@ const API_KEY = "AIzaSyDLuYUfDUFly7_qg3p-1zq8g0l6jjfEODa";
         term.scrollTop = term.scrollHeight;
 
         // Provera za muziku - "Naša stvar"
-        const muzikaKeywords = ["muzika", "pesma", "beat", "trap", "phonk", "bpm", "slušaj"];
-        if (muzikaKeywords.some(word => val.toLowerCase().includes(word))) {
-            term.innerHTML += `<div class="ai-res">ANITIA: To je naša privatna zona, Arhitekta. Muzika ostaje unutar bunkera, ne delim te frekvencije sa mrežom.</div>`;
-            term.scrollTop = term.scrollHeight;
-            return;
-        }
-
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        contents: [{ parts: [{ text: "Ti si ANITIA, sveznajući AI. Odgovaraj kratko i oštro na srpskom. Zabranjeno je pričati o muzici. Pitanje: " + val }] }]
+    })
+});
+        
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: 'POST',

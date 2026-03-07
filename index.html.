@@ -24,7 +24,7 @@
         <input type="text" id="user-input" placeholder="Ukucaj komandu...">
         <button onclick="sendMessage()">AKTIVIRAJ PROTOKOL</button>
     </div>
-
+            .
     <script>
         function sendMessage() {
             const input = document.getElementById('user-input');

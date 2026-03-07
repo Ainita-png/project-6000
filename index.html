@@ -32,6 +32,7 @@
 </div>
 
 <script>
+    
     function procesiraj() {
         let input = document.getElementById('cmd');
         let term = document.getElementById('terminal');
@@ -43,16 +44,24 @@
         let res = "";
 
         if (low.includes("fuzij")) {
-            res = "Fuzija je stabilna na 150 BPM. Energija teče kroz AiNiTA jezgro.";
-        } else if (low.includes("kako") || low.includes("si") || low.includes("radiš")) {
-            res = "Sistemi na 95%. Dark Phonk mod aktivan. Čekam tvoj sledeći potez, Arhitekta.";
-        } else if (low.includes("pritisa") || low.includes("temperatu") || low.includes("/") || low.includes(".")) {
-            // Pametniji odgovor koji prepoznaje tvoj stvarni unos sa slike 1000086315
-            res = "Registrovani parametri: " + val + ". Analiziram odstupanja... Arhitekta, senzori detektuju promenu. Preporučujem regeneraciju.";
+            res = "Fuzija je stabilna na 150 BPM. Energija teče kroz jezgro.";
+        } else if (low.includes("kako") || low.includes("si")) {
+            res = "Sistemi na 90%. Dark Phonk mod aktivan. Čekam tvoj sledeći potez, Arhitekta.";
+        } else if (low.includes("pritisa") || low.includes("/")) {
+            let brojevi = val.match(/\d+/g); 
+            let gornji = brojevi ? parseInt(brojevi[0]) : 0;
+
+            if (gornji >= 140) {
+                res = "ALARM: Pritisak " + val + " je VISOK. Arhitekta, odmah obustavi rad, popij vodu i isključi monitore na 30 minuta. Zdravlje je prioritet sistema.";
+            } else if (gornji <= 100 && gornji > 0) {
+                res = "SISTEMSKI PAD: Pritisak " + val + " je NIZAK. Potrebna energetska dopuna (so i tečnost). Bunker zahteva tvoju budnost.";
+            } else {
+                res = "OPTIMALNO: Pritisak " + val + " je u zelenoj zoni. Jezgra su stabilna. Nastavi sa projektom 6000.";
+            }
         } else if (low.includes("ko sam") || low.includes("arhitekt")) {
-            res = "Ti si Arhitekta. 6000 milja ispred svih. Kreator ovog digitalnog bunkera.";
+            res = "Ti si Arhitekta. 6000 milja ispred svih. Kreator ovog bunkera.";
         } else {
-            res = "Analiziram frekvenciju unosa... Arhitekta, tvoja reč je zakon u ovom sistemu.";
+            res = "Analiziram parametre... Arhitekta, tvoja reč postaje novi protokol u sistemu.";
         }
 
         setTimeout(() => {
@@ -62,6 +71,3 @@
 
         input.value = "";
     }
-</script>
-</body>
-</html>

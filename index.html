@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA 6000</title>
+    <style>
+        body { background: #000; color: #ff007f; font-family: monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
+        #bunker { width: 100%; max-width: 450px; border: 2px solid #ff007f; padding: 20px; background: #050505; box-shadow: 0 0 25px #ff007f; border-radius: 12px; text-align: center; }
+        .logo img { width: 100%; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
+        #terminal { height: 300px; overflow-y: auto; background: #000; border: 1px solid #1a1a1a; padding: 15px; margin-bottom: 15px; color: #00ffff; text-align: left; font-size: 14px; }
+        input { width: 100%; padding: 12px; background: #111; border: 1px solid #ff007f; color: #fff; border-radius: 5px; outline: none; margin-bottom: 10px; }
+        button { width: 100%; padding: 15px; background: #ff007f; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; }
+        .user { color: #ff007f; margin-top: 10px; }
+        .ai { margin-bottom: 15px; border-left: 2px solid #00ffff; padding-left: 10px; color: #00ffff; }
+    </style>
+</head>
+<body>
+    <div id="bunker">
+        <div class="logo"><img src="1772819972905.png" alt="ANITIA"></div>
+        <div id="terminal"><div class="ai">ANITIA: Arhitekta, napravili smo novi index.html. Sistem je čist. Slušam tvoje komande za proboj 6000.</div></div>
+        <input type="text" id="cmd" placeholder="Pritisak ili 'plan'..." onkeypress="if(event.key==='Enter') aktiviraj()">
+        <button onclick="aktiviraj()">AKTIVIRAJ PROTOKOL</button>
+    </div>
+    <script>
+        function aktiviraj() {
+            let i = document.getElementById('cmd'); let t = document.getElementById('terminal'); let v = i.value.trim();
+            if (!v) return;
+            t.innerHTML += `<div class="user">> ${v}</div>`;
+            let l = v.toLowerCase(); let r = "";
+            if (l.includes("/") || l.includes("prit")) {
+                let b = v.match(/\d+/g); let g = b ? parseInt(b[0]) : 0;
+                if (g >= 140) r = "ALARM: Pritisak " + v + " je VISOK. Arhitekta, odmaraj 30 min (faza Silence).";
+                else if (g <= 100 && g > 0) r = "PAD: Pritisak " + v + " je NIZAK. Potrebna dopuna energije.";
+                else r = "OPTIMALNO: Parametri " + v + " su stabilni. 6000 milja ispred svih.";
+            } else if (l.includes("plan")) {
+                r = "PLAN: Faza 'Silence' (bez poziva klijentima) i 'Energy Reserve' (bez nervoze kod kuće).";
+            } else if (l.includes("kako")) {
+                r = "Sistemi na 84%. Dark Phonk energija aktivna.";
+            } else { r = "Komanda primljena. Tvoja reč je zakon Arhitekta."; }
+            setTimeout(() => { t.innerHTML += `<div class="ai">ANITIA: ${r}</div>`; t.scrollTop = t.scrollHeight; }, 300);
+            i.value = "";
+        }
+    </script>
+</body>
+</html>

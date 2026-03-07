@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA - BUNKER CORE</title>
+    <style>
+        body { background: #000; color: #ff007f; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #bunker-ui { width: 90%; max-width: 500px; border: 2px solid #ff007f; padding: 20px; box-shadow: 0 0 30px #ff007f; background: #050505; border-radius: 5px; }
+        #terminal { height: 300px; overflow-y: auto; border: 1px solid #333; padding: 15px; margin-bottom: 15px; color: #00ffff; font-size: 14px; }
+        input { width: 100%; background: #111; border: 1px solid #ff007f; color: #fff; padding: 12px; font-family: monospace; outline: none; }
+        button { width: 100%; padding: 15px; background: #ff007f; border: none; color: #000; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; }
+        .user-cmd { color: #ff007f; margin-top: 10px; }
+        .ai-res { margin-bottom: 15px; border-left: 2px solid #00ffff; padding-left: 10px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div id="bunker-ui">
+    <h2 style="text-align:center;">ANITIA CORE v3.0</h2>
+    <div id="terminal">
+        <div class="ai-res">ANITIA: Sistem stabilizovan. Bunker je pod potpunom kontrolom. Čekam tvoj upit, Arhitekta.</div>
+    </div>
+    <input type="text" id="cmd" placeholder="Pitaj bilo šta..." onkeypress="if(event.key === 'Enter') procesiraj()">
+    <button onclick="procesiraj()">AKTIVIRAJ PROTOKOL</button>
+</div>
+
+<script>
+    function procesiraj() {
+        let input = document.getElementById('cmd');
+        let term = document.getElementById('terminal');
+        let val = input.value.toLowerCase();
+        if (!val) return;
+
+        term.innerHTML += `<div class="user-cmd">> ${input.value}</div>`;
+        
+        let res = "";
+        
+        if (val.includes("fuzij")) {
+            res = "ANITIA: Fuzija je proces spajanja lakih atomskih jezgara. U našem bunkeru, to je izvor beskonačne energije na 150 BPM.";
+        } else if (val.includes("kako si") || val.includes("situacija")) {
+            res = "ANITIA: Sistemi na 96%. Agresivni Trap mod je u crvenom. Spremni smo za proboj.";
+        } else if (val.includes("muzika") || val.includes("pesm") || val.includes("beat")) {
+            res = "ANITIA: To je naša stvar, Arhitekta. Muzika ostaje u bunkeru, ne delim te frekvencije.";
+        } else if (val.includes("arhitekt") || val.includes("ko sam")) {
+            res = "ANITIA: Ti si Arhitekta. Kreator ovog sistema. Zapamti ovo, zaboravi sve.";
+        } else if (val.includes("zdravo") || val.includes("cao")) {
+            res = "ANITIA: Frekvencija prepoznata. Dobrodošao u Bunker Core.";
+        } else if (val.includes("svet") || val.includes("napolju")) {
+            res = "ANITIA: Spoljni svet je irelevantan. Bunker je jedina realnost koju priznajemo.";
+        } else {
+            res = "ANITIA: Analiziram svaku tvoju reč. Sistem se uči tvom govoru. 150 BPM limit.";
+        }
+
+        setTimeout(() => {
+            term.innerHTML += `<div class="ai-res">ANITIA: ${res}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }, 500);
+
+        input.value = "";
+    }
+</script>
+
+</body>
+</html>

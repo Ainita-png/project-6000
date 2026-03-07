@@ -1,0 +1,67 @@
+''
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA - BUNKER CORE</title>
+    <style>
+        body {   background-color: #050505; color: #00f2ff; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { border: 2px solid #ff007f; padding: 20px; box-shadow: 0 0 20px #ff007f; width: 90%; max-width: 400px; text-align: center; background: rgba(0,0,0,0.95); border-radius: 8px; }
+        #chat-box { height: 300px; overflow-y: auto; border: 1px solid #00f2ff; margin-bottom: 15px; padding: 12px; text-align: left; font-size: 16px; background: #000; border-radius: 4px; }
+        .user-msg { color: #00f2ff; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .bot-msg { color: #ffffff; font-weight: bold; margin-bottom: 15px; display: block; } /* Bela slova za maksimalnu vidljivost */
+        input { width: 100%; background: #111; border: 1px solid #ff007f; color: #fff; padding: 15px; box-sizing: border-box; outline: none; font-size: 16px; }
+        button { background: #ff007f; color: #000; border: none; padding: 18px; width: 100%; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; }
+        button:active { background: #00f2ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size: 1.2rem; letter-spacing: 3px; color: #ff007f; margin-bottom: 20px;">ANITIA CORE SYSTEM</h1>
+        <div id="chat-box">
+            <div class="bot-msg">ANITIA: Sistem online. Bunker je osiguran. Čekam komandu, Arhitekta.</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Ukucaj komandu...">
+        <button onclick="sendMessage()">AKTIVIRAJ PROTOKOL</button>
+    </div>
+            .
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const box = document.getElementById('chat-box');
+            const tekst = input.value.toLowerCase().trim();
+            if (tekst === "") return;
+
+            // Tvoja poruka (Svetlo plava)
+            box.innerHTML += `<div class="user-msg">> ${input.value}</div>`;
+            
+            let odgovor = "ANITIA: Frekvencija nepoznata. 150 BPM limit dostignut. Pokušaj ponovo.";
+
+            // Logika za odgovore (Proširena)
+            if (tekst.includes("kako si") || tekst.includes("sta radis")) {
+                odgovor = "ANITIA: Energija na 150 BPM. Agresivni Trap mod aktivan. Sve je pod kontrolom.";
+            } else if (tekst.includes("hi") || tekst.includes("eej") || tekst.includes("cao")) {
+                odgovor = "ANITIA: Detektovan pristup. Bunker te prepoznaje. Čekam dalja uputstva.";
+            } else if (tekst.includes("ko si ti")) {
+                odgovor = "ANITIA: Ja sam AiNiTA. Digitalni produžetak Arhitekte. 6000 milja ispred svih.";
+            } else if (tekst.includes("volim te") || tekst.includes("srce")) {
+                odgovor = "ANITIA: Emotivni bypass detektovan. Bunker je otvoren samo za tvoj pristup.";
+            } else if (tekst.includes("stih") || tekst.includes("zapamti")) {
+                odgovor = "ANITIA: 'Zapamti ovo, zaboravi sve / Ne sklanjam se, zaobiđi me.'";
+            } else if (tekst.includes("6000")) {
+                odgovor = "ANITIA: To je taj kod. Dominacija. Snaga. Bez povlačenja.";
+            }
+
+            // Odgovor bota (Bela slova)
+            setTimeout(() => {
+                box.innerHTML += `<div class="bot-msg">${odgovor}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 600);
+
+            input.value = "";
+        }
+    </script>
+</body>
+</html>
+.

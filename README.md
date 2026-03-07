@@ -1,4 +1,4 @@
-# PROJECT-6000
+# project-6000
 ## AiNiTA - BUNKER CORE
 **Status**: Active 
 **Persona**: Arhitekta

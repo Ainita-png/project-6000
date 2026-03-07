@@ -1,3 +1,4 @@
+<img src="1000086164.png" width="100%"> (
 # PROJECT-6000
 ### Arhitektonska kontrola sistema i Dark Phonk generator
 

@@ -3,25 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiNiTA - 6000 Miles Ahead</title>
+    <title>AiNiTA - BUNKER CHAT</title>
     <style>
-        body { background-color: #000; color: #ff007f; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
-        .logo { width: 100%; max-width: 500px; border: 2px solid #00f2ff; box-shadow: 0 0 20px #00f2ff; }
-        h1 { color: #00f2ff; text-transform: uppercase; letter-spacing: 5px; }
-        textarea { width: 90%; height: 100px; background: #111; color: #fff; border: 1px solid #ff007f; padding: 10px; margin-top: 20px; }
-        button { background: #ff007f; color: #000; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 90%; }
-        .status { color: #555; font-size: 12px; margin-top: 50px; }
+        body { background-color: #050505; color: #00f2ff; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { border: 2px solid #ff007f; padding: 20px; box-shadow: 0 0 15px #ff007f; width: 90%; max-width: 400px; text-align: center; background: rgba(0,0,0,0.9); }
+        #chat-box { height: 200px; overflow-y: auto; border: 1px solid #00f2ff; margin-bottom: 15px; padding: 10px; text-align: left; font-size: 13px; background: #111; }
+        .user-msg { color: #fff; margin-bottom: 5px; }
+        .bot-msg { color: #ff007f; font-weight: bold; margin-bottom: 10px; border-left: 2px solid #ff007f; padding-left: 5px; }
+        input { width: 100%; background: #111; border: 1px solid #00f2ff; color: #fff; padding: 10px; box-sizing: border-box; }
+        button { background: #ff007f; color: #000; border: none; padding: 15px; width: 100%; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <img src="1772819972905.png" class="logo">
-    <h1>Bunker Access</h1>
-    <p>LOG: Sistem je operativan. 150 BPM detektovano.</p>
-    
-    <textarea placeholder="Unesi stih ili komandu za Arhitektu..."></textarea>
-    <br>
-    <button onclick="alert('KOMANDA PRIMLJENA. ANITIA ANALIZIRA...')">POŠALJI U BUNKER</button>
+    <div class="container">
+        <h1 style="font-size: 1rem; letter-spacing: 2px;">ANITIA SYSTEMS v1.0</h1>
+        <div id="chat-box">
+            <div class="bot-msg">ANITIA: Sistem online. Čekam komandu, Arhitekta.</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Ukucaj nešto...">
+        <button onclick="sendMessage()">AKTIVIRAJ PROTOKOL</button>
+    </div>
 
-    <div class="status">© AINITA CORP | 6000 MILES AHEAD | JAPANESE PRECISION</div>
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const box = document.getElementById('chat-box');
+            if (input.value.trim() === "") return;
+
+            // Prikaz korisničke poruke
+            box.innerHTML += `<div class="user-msg">> ${input.value}</div>`;
+            
+            // ANITIA Odgovori (Agresivni Trap/Phonk stil)
+            const odgovori = [
+                "ANITIA: Analiziram stih... 150 BPM detektovano. Dominacija potvrđena.",
+                "ANITIA: 6000 milja ispred svih. Tvoj zahtev je u obradi.",
+                "ANITIA: Dark Phonk vibra je prejaka. Sistem se pregreva.",
+                "ANITIA: Zapamti ovo, zaboravi sve. Bunker je tvoj.",
+                "ANITIA: Bez melizama. Bez orijentala. Samo čista agresija."
+            ];
+            
+            const randomOdgovor = odgovori[Math.floor(Math.random() * odgovori.length)];
+            
+            setTimeout(() => {
+                box.innerHTML += `<div class="bot-msg">${randomOdgovor}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 1000);
+
+            input.value = "";
+        }
+    </script>
 </body>
 </html>

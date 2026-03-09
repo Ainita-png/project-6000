@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA CORE | 6000</title>
+    <style>
+        body { background: #000; color: #ddd; font-family: 'Courier New', monospace; padding: 15px; text-transform: uppercase; }
+        .h { border-bottom: 2px solid #f00; margin-bottom: 20px; padding-bottom: 10px; }
+        .st { color: #0f0; font-size: 0.7rem; letter-spacing: 2px; }
+        input { width: 100%; padding: 15px; background: #111; border: 2px solid #444; color: #0f0; font-size: 1.2rem; outline: none; box-sizing: border-box; }
+        input:focus { border-color: #f00; }
+        #r { margin-top: 20px; padding: 15px; background: #080808; border-left: 5px solid #0f0; display: none; }
+        .a { background: #1a0000; border: 1px dashed #f00; padding: 10px; margin-top: 10px; color: #f99; font-size: 0.9rem; }
+        .alert { color: #f00; border: 1px solid #f00; padding: 10px; margin-top: 20px; text-align: center; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+<div class="h">
+    <div class="st">SYSTEM ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="margin:5px 0 0 0; font-size: 1.5rem;">AiNiTA v2.1</h1>
+</div>
+
+<input type="text" id="i" placeholder="KUCАJ: MAD, BROM, SIZ, PRIT..." oninput="f()">
+
+<div id="r"></div>
+
+<div class="alert">ALARM: PRITISAK > 180/110 | SAT < 92%</div>
+
+<script>
+const D = [
+    // LEKOVI
+    {n: "Madopar", o: "Lek za Parkinson (Levodopa).", s: "Strogo u minut! Pazi na diskineziju i nagli pad pritiska kod ustajanja."},
+    {n: "Bromazepam", o: "Anksiolitik. Smirenje.", s: "Rizik od pada! Proveri nivo svesti, ne daj ako je korisnik vec previse pospan."},
+    {n: "Lasix", o: "Diuretik. Izbacivanje tecnosti.", s: "Prati kolicinu urina. Moze drasticno da obori pritisak."},
+    {n: "Enalapril", o: "Lek za pritisak.", s: "Proveri pritisak 60 min nakon doze. Pazi na suv kasalj."},
+    
+    // STANJA I DIJAGNOZE
+    {n: "Alzheimer", o: "Gubitak pamcenja i dezorijentacija.", s: "Validacija. Ne ispravljaj ih. Preusmeri paznju na hranu ili muziku."},
+    {n: "Sizofrenija", o: "Paranoja i halucinacije.", s: "Asimetricna dominacija. Stoj pod uglom. Ne osporavaj njihovu realnost direktno."},
+    {n: "Parkinson", o: "Ukocenost i drhtanje.", s: "Koristi ritam (1-2-1-2) za kretanje. Strpljenje kod gutanja lekova."},
+    {n: "Demencija", o: "Sundowning efekat (nemir pred mrak).", s: "Smanji buku. Upali blago svetlo pre nego sto padne mrak."},
+    
+    // HITNE SITUACIJE
+    {n: "Vrtoglavica", o: "Vertigo.", s: "Sedi odmah. Meri pritisak i secer. Ne pustaj da hoda sam."},
+    {n: "Saturacija", o: "Kiseonik u krvi.", s: "Ispod 92% je kriticno. Podigni uzglavlje, proveri da li je maska/nosnica na mestu."},
+    {n: "Gusenje", o: "Aspiracija hranom ili tecnoscu.", s: "Hajmlihov zahvat ako ne moze da kaslje. Odmah nagni napred."},
+    {n: "Dekubitus", o: "Rane od lezanja.", s: "Okretanje na svaka 2 sata. Koza mora biti suva i cista."},
+    {n: "Agresija", o: "Fizicki ili verbalni napad.", s: "Smiren glas. Ne sateruj ih u cosak. Drzi ruke vidljivim."}
+];
+
+function f() {
+    let q = document.getElementById('i').value.toLowerCase();
+    let res = document.getElementById('r');
+    if (q.length < 2) { res.style.display = 'none'; return; }
+    let m = D.find(item => item.n.toLowerCase().includes(q));
+    if (m) {
+        res.style.display = 'block';
+        res.innerHTML = `<h2 style="color:#0f0;margin:0;">${m.n}</h2><p><strong>OPIS:</strong> ${m.o}</p><div class="a"><strong>STRATEGIJA:</strong><br>${m.s}</div>`;
+    } else { res.style.display = 'none'; }
+}
+</script>
+</body>
+</html>

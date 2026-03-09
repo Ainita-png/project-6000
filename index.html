@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{background:#000;color:#ddd;font-family:monospace;padding:15px;text-transform:uppercase}
+input{width:100%;padding:15px;background:#111;border:2px solid #444;color:#0f0;font-size:1.2rem;outline:none}
+#res{margin-top:20px;padding:15px;background:#050505;border-left:5px solid #0f0;display:none}
+.adv{background:#100;border:1px dashed #f00;padding:10px;margin-top:10px;color:#f99}
+</style>
+</head>
+<body>
+<h2 style="color:#f00;border-bottom:2px solid #f00">AiNiTA CORE</h2>
+<input type="text" id="s" placeholder="KUCAJ: VRT, BROM, SIZ..." oninput="search()">
+<div id="res"></div>
+<script>
+const D = [
+{n:"Vrtoglavica",o:"Proveri pritisak i secer.",s:"Neka korisnik sedne odmah."},
+{n:"Bromazepam",o:"Lek za smirenje.",s:"Pazi na padove i pospanost."},
+{n:"Parkinson",o:"Rigor i tremor.",s:"Broj 1-2-1-2 za pokret."},
+{n:"Saturacija",o:"Kiseonik u krvi.",s:"Ispod 92% je alarm!"}
+];
+function search(){
+let q=document.getElementById('s').value.toLowerCase();
+let r=document.getElementById('res');
+if(q.length<2){r.style.display='none';return}
+let m=D.find(i=>i.n.toLowerCase().includes(q));
+if(m){r.style.display='block';r.innerHTML=`<h3 style="color:#0f0">${m.n}</h3><p>${m.o}</p><div class="adv">SAVET: ${m.s}</div>`}
+else{r.style.display='none'}
+}
+</script>
+</body>
+</html>

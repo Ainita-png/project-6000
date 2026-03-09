@@ -1,0 +1,44 @@
+window.KORPUS = [
+    {
+        n: "Bromazepam",
+        c: "Farmakologija / Sedativ",
+        o: "Snažan anksiolitik. Koristi se za smirenje, napetost i strah. Deluje na GABA receptore.",
+        u: "Pratiti nivo svesti. Može izazvati konfuziju i povećati rizik od pada. Ne mešati sa alkoholom.",
+        s: "NE DAJ ako je korisnik već pospan. Proveri pritisak pre i posle primene. Strategija: Minimalna efektivna doza."
+    },
+    {
+        n: "Madopar (Levodopa)",
+        c: "Neurologija / Parkinson",
+        o: "Osnovni lek za Parkinsonovu bolest. Nadoknađuje dopamin u mozgu.",
+        u: "30 min pre ili 60 min posle jela. Proteini direktno blokiraju apsorpciju leka.",
+        s: "Kod blokade pokreta (frizing), koristi ritmičko brojanje 1-2-1-2 da resetuješ impuls za hod."
+    },
+    {
+        n: "Haldol (Haloperidol)",
+        c: "Psihijatrija / Antipsihotik",
+        o: "Snažan neuroleptik za agresiju i halucinacije. Blokira dopaminske puteve.",
+        u: "Prati gutanje i ukočenost mišića. Može izazvati grčeve jezika i vrata (akutna distonija).",
+        s: "Ako se javi ukočenost, odmah javi lekaru. Kod agresije - drži distancu, ne ulazi u direktan sukob."
+    },
+    {
+        n: "Hipertenzivna Kriza",
+        c: "Kardiologija / Hitno",
+        o: "Pritisak preko 180/110 mmHg. Opasnost od moždanog udara i edema pluća.",
+        u: "Mirovanje, polusedeći položaj. Ne obarati pritisak naglo (ne više od 25% u prvom satu).",
+        s: "Smiri pacijenta glasom. Panika diže adrenalin, a on pritisak. Kontrola na svakih 15 minuta."
+    },
+    {
+        n: "Aspiraciona Pneumonija",
+        c: "Interna medicina",
+        o: "Upala pluća zbog upadanja hrane u disajne puteve. Kod starijih često bez visoke temperature.",
+        u: "Prati saturaciju kiseonika (SpO2). Ako je ispod 92% uz krkljanje - hitno lekar.",
+        s: "Hranjenje isključivo pod 90 stepeni. Pacijent mora ostati uspravan 30 min nakon obroka."
+    },
+    {
+        n: "Dekubitus (IV stepen)",
+        c: "Nega / Hirurgija",
+        o: "Duboka rana do mišića ili kosti. Visok rizik od teške infekcije (sepse).",
+        u: "Okretanje na svaka 2 sata (Levo-Leđa-Desno). Čišćenje isključivo fiziološkim rastvorom.",
+        s: "Tvojih 97 kg je prednost - koristi polugu preko kuka pri okretanju, ne vuci kožu po čaršavu."
+    }
+];

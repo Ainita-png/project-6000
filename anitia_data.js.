@@ -1,0 +1,70 @@
+const KORPUS = [
+    // --- FARMAKOLOGIJA (Lekovi od A do Ž) ---
+    {
+        n: "Bromazepam",
+        c: "Farmakologija / Anksiolitik",
+        o: "Snažan anksiolitik iz grupe benzodiazepina. Smanjuje emocionalnu napetost i uznemirenost.",
+        u: "Maksimalna koncentracija u plazmi nakon 1-4h. Dugotrajna upotreba vodi ka zavisnosti. Ne mešati sa alkoholom.",
+        s: "Rizik od pada je ogroman kod starijih. Ako je korisnik već pospan ili konfuzan, stopiraj dozu i javi lekaru."
+    },
+    {
+        n: "Madopar (Levodopa/Benserazid)",
+        c: "Farmakologija / Antiparkinsonik",
+        o: "Lek koji nadoknađuje dopamin. Levodopa se konvertuje u mozgu, benserazid sprečava perifernu razgradnju.",
+        u: "Strogo poštovati satnicu zbog 'on-off' ciklusa. Proteini u hrani (meso, mleko) drastično smanjuju dejstvo.",
+        s: "Ako se javi 'zamrzavanje' pokreta, koristi vizuelne ili zvučne okidače (ritam 1-2) da resetuješ neurološki put."
+    },
+    {
+        n: "Haldol (Haloperidol)",
+        c: "Farmakologija / Antipsihotik",
+        o: "Tipični neuroleptik. Blokira dopaminske receptore. Koristi se kod psihoza i teške agresije.",
+        u: "Pratiti ekstrapiramidalne efekte (ukočenost, drhtanje). Može izazvati produženje QT intervala na srcu.",
+        s: "Kod pacijenata sa demencijom, koristi se samo kao krajnja mera. Prati gutanje, jer može izazvati gušenje (disfagiju)."
+    },
+    {
+        n: "Lasix (Furosemid)",
+        c: "Farmakologija / Diuretik",
+        o: "Snažan diuretik petlje. Izbacuje višak tečnosti i snižava krvni pritisak.",
+        u: "Može dovesti do gubitka kalijuma i dehidratacije. Prati diurezu (koliko pacijent mokri).",
+        s: "Proveri pritisak pre davanja. Ako je prenizak, Lasix može izazvati kolaps cirkulacije."
+    },
+
+    // --- NEUROLOGIJA & PSIHIJATRIJA ---
+    {
+        n: "Alchajmerova Demencija",
+        c: "Neurologija / Kognicija",
+        o: "Nepovratno propadanje neurona. Gubitak kratkoročnog pamćenja, dezorijentacija u vremenu i prostoru.",
+        u: "Terapija (donepezil, memantin) samo usporava progresiju. Ključna je stalna stimulacija i rutina.",
+        s: "Ne pokušavaj da ih 'urazumiš' logikom. Njihova realnost je njihova istina. Budi miran, autoritativan ali blag."
+    },
+    {
+        n: "Šizofrenija (Akutna)",
+        c: "Psihijatrija",
+        o: "Poremećaj mišljenja, halucinacije (glasovi) i deluzije (paranoja).",
+        u: "Prati redovnost uzimanja antipsihotika. Svaka promena u ponašanju može biti najava napada.",
+        s: "Arhitekta princip: Nikad ne osporavaj glasove koje čuju, ali jasno reci da ih ti ne čuješ. Drži distancu."
+    },
+
+    // --- HITNA STANJA & NEGA ---
+    {
+        n: "Hipertenzivna Kriza",
+        c: "Kardiologija / Hitno",
+        o: "Naglo skakanje pritiska iznad 180/110 mmHg. Rizik od pucanja krvnog suda u mozgu.",
+        u: "Mirovanje u polusedećem položaju. Ne obarati pritisak prebrzo zbog rizika od ishemije.",
+        s: "Smiri pacijenta bez panike. Panika diže adrenalin, adrenalin diže pritisak. Zatvoren krug."
+    },
+    {
+        n: "Dekubitus (Faza IV)",
+        c: "Nega / Hirurgija",
+        o: "Rana koja je probila kožu i mišić do kosti. Visok rizik od sepse.",
+        u: "Neophodno hirurško čišćenje i specifični flasteri. Okretanje na 2 sata bez izuzetka.",
+        s: "Koristi polugu tela, ne snagu ruku. Tvojih 97kg su oslonac, ne alat za vučenje kože."
+    },
+    {
+        n: "Hipoglikemija",
+        c: "Endokrinologija / Hitno",
+        o: "Pad šećera ispod 3.9 mmol/L. Mozak ostaje bez goriva.",
+        u: "Pravilo 15/15: 15g šećera, čekaj 15 min, proveri opet. Ako ne guta, nulta tolerancija za hranu u usta.",
+        s: "Gubitak svesti zbog šećera se često meša sa spavanjem. Ako se ne budi lako, prva sumnja je šećer."
+    }
+];

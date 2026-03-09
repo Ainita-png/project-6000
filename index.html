@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA CORE | 6000</title>
+    <style>
+        body { background: #020202; color: #a0a0a0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 20px; overflow-x: hidden; }
+        .h-tech-header { border-left: 4px solid #f00; padding-left: 15px; margin-bottom: 30px; background: rgba(255,0,0,0.05); }
+        .glow-text { color: #0f0; text-shadow: 0 0 10px #0f0; font-size: 0.8rem; letter-spacing: 3px; }
+        input { width: 100%; padding: 20px; background: #0a0a0a; border: 1px solid #333; color: #0f0; font-size: 1.3rem; outline: none; transition: 0.3s; border-radius: 5px; }
+        input:focus { border-color: #0f0; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+        #results-container { margin-top: 25px; }
+        .card { background: #0d0d0d; border: 1px solid #222; padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #0f0; animation: fadeIn 0.4s; }
+        .cat { color: #f00; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; }
+        .strategy { background: #1a0505; border: 1px dashed #f00; padding: 15px; margin-top: 15px; color: #ff9d9d; font-size: 0.95rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="h-tech-header">
+    <div class="glow-text">SYSTEM ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="color:#fff; margin:5px 0;">AiNiTA UNIVERZITET</h1>
+</div>
+
+<input type="text" id="search" placeholder="UNESI POJAM (LEK, BOLEST, SIMPTOM)..." oninput="engine()">
+
+<div id="results-container"></div>
+
+<script>
+// --- MASIVNA MEDICINSKA BAZA (JSON) ---
+const KORPUS = [
+    // KARDIOLOGIJA
+    {n: "Infarkt Miokarda", c: "Kardiologija", o: "Nekroza srcanog misica. Kod starijih cesto atipicno (bez bola, samo mucnina).", s: "Hitan poziv lekaru. Mirovanje, kiseonik ako je <94%. Ne dozvoli kretanje."},
+    {n: "Hipertenzivna Kriza", c: "Kardiologija", o: "Naglo povisenje pritiska preko 180/110 mmHg.", s: "Rizik od edema pluca i sloga. Postepeno obaranje, ne naglo. Mirna okolina."},
+    
+    // NEUROLOGIJA
+    {n: "Madopar", c: "Farmakologija / Neurologija", o: "Levodopa + Benserazid. Nadoknada dopamina kod Parkinsona.", s: "Davati tacno pre jela (30 min) ili posle (60 min). Pazi na nagle padove pritiska pri ustajanju."},
+    {n: "Parkinson (Frizing)", c: "Neurologija", o: "Blokada pokreta, pacijent se 'zalepi' za pod.", s: "Koristi ritmicko brojanje (jedan-dva) ili vizuelni marker na podu da probijes blokadu."},
+    {n: "Moždani Udar (CVI)", c: "Neurologija", o: "Ishemija ili krvarenje u mozgu.", s: "FAST: Face (lice), Arms (ruke), Speech (govor), Time (vreme). Svaki minut kosta milion neurona."},
+
+    // PSIHIJATRIJA & MRAČNA PSIHOLOGIJA
+    {n: "Agresivna Paranoja", c: "Psihijatrija", o: "Gubitak poverenja, strah od trovanja ili kradje.", s: "Nikad ne osporavaj deluziju. Koristi 'asimetricnu dominaciju' - budi smiren, ali postavi fizicku barijeru."},
+    {n: "Haldol (Haloperidol)", c: "Farmakologija", o: "Tipicni antipsihotik.", s: "Prati pojavu 'ukocenog jezika' i grceva (distonija). Hitan prekid ako se javi visoka temperatura."},
+
+    // GERONTOLOGIJA & NEGA
+    {n: "Aspiraciona Pneumonija", c: "Interna medicina", o: "Upala pluca izazvana upadanjem hrane ili tecnosti.", s: "Prevencija: Podizanje uzglavlja na 90 stepeni tokom jela i 30 min nakon obroka."},
+    {n: "Dekubitus (IV stepen)", c: "Nega", o: "Duboko ostecenje tkiva do misica i kostiju.", s: "Okretanje na svaka dva sata je jedini zakon. Kontrola vlage i ishrane bogate proteinima."},
+    
+    // HITNA STANJA
+    {n: "Hipoglikemija", c: "Endokrinologija", o: "Pad secera <3.9 mmol/L.", s: "Brzi secer (med, sok) ako guta. Ako ne, nista u usta - rizik od gusenja. Glukagon."}
+];
+
+function engine() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const container = document.getElementById('results-container');
+    container.innerHTML = "";
+    
+    if(q.length < 2) return;
+
+    const matches = KORPUS.filter(item => 
+        item.n.toLowerCase().includes(q) || 
+        item.c.toLowerCase().includes(q)
+    );
+
+    matches.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="cat">${m.c}</div>
+            <h2 style="margin:0; color:#fff;">${m.n}</h2>
+            <p style="margin:10px 0;">${m.o}</p>
+            <div class="strategy"><strong>ARHITEKTA PROTOKOL:</strong><br>${m.s}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>

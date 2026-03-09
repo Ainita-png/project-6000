@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA UNIVERZITET | 6000</title>
+    <style>
+        body { background: #020202; color: #a0a0a0; font-family: 'Segoe UI', sans-serif; padding: 15px; }
+        .h-tech-header { border-left: 4px solid #f00; padding-left: 15px; margin-bottom: 25px; background: rgba(255,0,0,0.05); }
+        .glow-text { color: #0f0; text-shadow: 0 0 10px #0f0; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
+        input { width: 100%; padding: 18px; background: #0a0a0a; border: 1px solid #333; color: #0f0; font-size: 1.2rem; outline: none; border-radius: 5px; box-sizing: border-box; }
+        input:focus { border-color: #f00; box-shadow: 0 0 15px rgba(255,0,0,0.2); }
+        #results-container { margin-top: 20px; }
+        .card { background: #0d0d0d; border: 1px solid #222; padding: 18px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #0f0; animation: fadeIn 0.3s; }
+        .cat { color: #f00; font-size: 0.65rem; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .strategy { background: rgba(255,0,0,0.08); border: 1px dashed #f00; padding: 12px; margin-top: 15px; color: #ff9d9d; font-size: 0.9rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="h-tech-header">
+    <div class="glow-text">SYSTEM ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="color:#fff; margin:5px 0; font-size: 1.4rem;">AiNiTA UNIVERZITET</h1>
+</div>
+
+<input type="text" id="search" placeholder="PRETRAGA (LEK, DIJAGNOZA, SIMPTOM)..." oninput="engine()">
+
+<div id="results-container"></div>
+
+<script>
+// --- MASIVNA MEDICINSKA BAZA (UNIVERZITETSKI NIVO) ---
+const KORPUS = [
+    {
+        n: "Madopar (Levodopa/Benserazid)",
+        c: "Farmakologija / Neurologija",
+        o: "Lek za Parkinsonovu bolest koji nadoknađuje dopamin u mozgu. Benserazid sprečava perifernu razgradnju leka.",
+        u: "Davati 30 min pre ili 60 min posle jela. Proteini direktno blokiraju apsorpciju leka. Prati nevoljne pokrete (diskinezija).",
+        s: "Kod blokade (frizing) ne vuci pacijenta na silu. Koristi ritmičko tapšanje ili brojanje 1-2-1-2 da resetuješ neurološki impuls."
+    },
+    {
+        n: "Aspiraciona Pneumonija",
+        c: "Interna medicina / Gerontologija",
+        o: "Upala pluća izazvana prodorom hrane ili tečnosti u donje disajne puteve. Kod starijih je često 'tiha'.",
+        u: "Prati saturaciju (alarm ispod 92%) i temperaturu. Simptomi: krkljanje u grudima, konfuzija.",
+        s: "Prevencija: Hranjenje isključivo pod uglom od 90 stepeni. Pacijent mora ostati u tom položaju 30 minuta nakon jela."
+    },
+    {
+        n: "Hipertenzivna Kriza",
+        c: "Kardiologija / Hitna stanja",
+        o: "Pritisak preko 180/110 mmHg sa opasnošću po organe (mozak, srce, bubrezi).",
+        u: "Ako ima neuroloških ispada (otežan govor, asimetrija l
+  

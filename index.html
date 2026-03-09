@@ -1,34 +1,70 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{background:#000;color:#ddd;font-family:monospace;padding:15px;text-transform:uppercase}
-input{width:100%;padding:15px;background:#111;border:2px solid #444;color:#0f0;font-size:1.2rem;outline:none}
-#res{margin-top:20px;padding:15px;background:#050505;border-left:5px solid #0f0;display:none}
-.adv{background:#100;border:1px dashed #f00;padding:10px;margin-top:10px;color:#f99}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA CORE | 6000</title>
+    <style>
+        body { background: #000; color: #ddd; font-family: 'Courier New', monospace; padding: 15px; text-transform: uppercase; }
+        .header { border-bottom: 2px solid #f00; margin-bottom: 20px; padding-bottom: 10px; }
+        .status { color: #0f0; font-size: 0.7rem; letter-spacing: 2px; }
+        input { width: 100%; padding: 15px; background: #111; border: 2px solid #333; color: #0f0; font-size: 1.2rem; outline: none; box-sizing: border-box; }
+        input:focus { border-color: #f00; }
+        #res { margin-top: 20px; padding: 15px; background: #050505; border-left: 5px solid #0f0; display: none; }
+        .adv { background: #1a0000; border: 1px dashed #f00; padding: 10px; margin-top: 10px; color: #f99; font-size: 0.9rem; }
+        .alert { color: #f00; border: 1px solid #f00; padding: 10px; margin-top: 20px; text-align: center; font-size: 0.8rem; }
+    </style>
 </head>
 <body>
-<h2 style="color:#f00;border-bottom:2px solid #f00"<h1<h1>AiNiTA v2.0</h1>
-<input type="text" id="s" placeholder="KUCAJ: VRT, BROM, SIZ..." oninput="search()">
+
+<div class="header">
+    <div class="status">SYSTEM ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="margin:5px 0 0 0; font-size: 1.5rem;">AiNiTA v2.0</h1>
+</div>
+
+<input type="text" id="s" placeholder="PRETRAGA: VRT, BROM, SIZ, PAR..." oninput="trazi()">
+
 <div id="res"></div>
+
+<div class="alert">ALARM: PRITISAK > 180/110 | SAT < 90%</div>
+
 <script>
 const D = [
-{n:"Vrtoglavica",o:"Proveri pritisak i secer.",s:"Neka korisnik sedne odmah."},
-{n:"Bromazepam",o:"Lek za smirenje.",s:"Pazi na padove i pospanost."},
-{n:"Parkinson",o:"Rigor i tremor.",s:"Broj 1-2-1-2 za pokret."},
-{n:"Saturacija",o:"Kiseonik u krvi.",s:"Ispod 92% je alarm!"}
+    // MEDICINA & VITALNI PARAMETRI
+    {n: "Vrtoglavica", o: "Vertigo. Odmah proveri pritisak i secer.", s: "Neka korisnik sedne odmah. Proveri da li je naglo ustao."},
+    {n: "Saturacija", o: "Nivo kiseonika u krvi.", s: "Ispod 92% je alarm! Podigni uzglavlje, otvori prozor."},
+    {n: "Hipertenzija", o: "Visok pritisak (>140/90).", s: "Rizik od sloga. Obezbedi mir dok terapija ne deluje."},
+    {n: "Hipotenzija", o: "Nizak pritisak (<90/60).", s: "Rizik od pada. Ne ostavljaj korisnika da stoji sam."},
+    {n: "Gusenje", o: "Dispneja. Otezano disanje.", s: "Proveri disajne puteve i saturaciju odmah."},
+    {n: "Mucnina", o: "Nausea. Moze biti predznak infarkta.", s: "Proveri hladan znoj i bol u grudima/vilici."},
+    
+    // PSIHOLOGIJA & RAD SA KORISNICIMA
+    {n: "Alzheimer", o: "Kognitivni deficit i dezorijentacija.", s: "Validacija bez ispravljanja. Ne raspravljaj se."},
+    {n: "Sizofrenija", o: "Halucinacije i deluzije.", s: "Asimetricna dominacija. Stoj pod uglom od 45 stepeni."},
+    {n: "Parkinson", o: "Rigor (ukocenost) i tremor.", s: "Auditivni ritam. Broj 1-2-1-2 za pokret."},
+    {n: "Demencija", o: "Sundowning (nemir pred mrak).", s: "Smanji svetlo i buku. Pricaj o proslosti."},
+    {n: "Paranoja", o: "Strah od kradje ili trovanja.", s: "Ne ubedjuj ga suprotno. Reci: 'Razumem da se bojis'."},
+    
+    // LEKOVI (DODAJ PO POTREBI)
+    {n: "Bromazepam", o: "Za smirenje. Pazi na pospanost.", s: "Visok rizik od pada. Proveri vitalne funkcije."},
+    {n: "Lasix", o: "Diuretik. Izbacivanje tecnosti.", s: "Pazi na dehidrataciju i cest toalet."},
+    {n: "Enalapril", o: "Lek za pritisak.", s: "Proveri pritisak sat vremena nakon doze."}
 ];
-function search(){
-let q=document.getElementById('s').value.toLowerCase();
-let r=document.getElementById('res');
-if(q.length<2){r.style.display='none';return}
-let m=D.find(i=>i.n.toLowerCase().includes(q));
-if(m){r.style.display='block';r.innerHTML=`<h3 style="color:#0f0">${m.n}</h3><p>${m.o}</p><div class="adv">SAVET: ${m.s}</div>`}
-else{r.style.display='none'}
+
+function trazi(){
+    let q = document.getElementById('s').value.toLowerCase();
+    let r = document.getElementById('res');
+    if(q.length < 2){ r.style.display = 'none'; return; }
+
+    let m = D.find(i => i.n.toLowerCase().includes(q));
+    if(m){
+        r.style.display = 'block';
+        r.innerHTML = `<h2 style="color:#0f0;margin:0;">${m.n}</h2><p><strong>OPIS:</strong> ${m.o}</p><div class="adv"><strong>STRATEGIJA:</strong><br>${m.s}</div>`;
+    } else {
+        r.style.display = 'none';
+    }
 }
 </script>
 </body>
 </html>
+

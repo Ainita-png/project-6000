@@ -1,16 +1,51 @@
 window.KORPUS = [
+    // --- KARDIO / HITNO ---
     {
-        n: "Mračna Psihologija - Manipulacija",
-        c: "Psihologija / Strategija",
-        o: "Tehnike koje se koriste za promenu percepcije ili ponašanja drugih kroz prikrivene taktike.",
-        u: "Prepoznaj 'gaslighting' i emocionalno ucenjivanje. Uvek zadrži emocionalnu distancu i analiziraj činjenice, a ne reči.",
-        s: "Tvoj 'Arhitekta' štit: Nikad ne reaguj odmah. Sačekaj, analiziraj nameru, pa odgovori hladno."
+        n: "Visok Krvni Pritisak (Hipertenzija)",
+        c: "Kardiologija / Hitna Stanja",
+        o: "Stanje gde je pritisak iznad normalnih granica. Kritično iznad 180/110 mmHg.",
+        u: "Mirovanje, polusedeći položaj. Kontrola na 15 minuta. Ne davati ništa na usta ako je pacijent konfuzan.",
+        s: "Alarm: Ako pritisak prati glavobolja i trnjenje lica, odmah zovi hitnu. Ne paniči da ne digneš pacijentu adrenalin."
     },
     {
-        n: "Aikido - Poluga na zglobu (Kote Gaeshi)",
-        c: "Borilačke veštine / Samoodbrana",
-        o: "Tehnika preusmeravanja protivnikove energije kroz rotaciju zgloba.",
-        u: "Koristi težinu celog tela, a ne samo snagu ruku. Fokus je na centru (Hara).",
-        s: "Kod tvojih 97 kg, poluga je nezaustavljiva ako je izvedeš iz kuka. Ne vuci, nego rotiraj."
+        n: "Nizak Krvni Pritisak (Hipotenzija)",
+        c: "Kardiologija / Hitna Stanja",
+        o: "Pad pritiska koji vodi do vrtoglavice i nesvestice.",
+        u: "Podigni noge pacijenta (Autotransfuzija). Hidratacija ako može da guta.",
+        s: "Proveri da li je pio previše diuretika (Lasix). Neka ustaje polako, nikako naglo."
+    },
+
+    // --- MRAČNA PSIHOLOGIJA & STRATEGIJA ---
+    {
+        n: "Analiza Sagovornika",
+        c: "Mračna Psihologija / Arhitekta",
+        o: "Skeniranje namera kroz mikro-ekspresije i ton glasa.",
+        u: "Prati neslaganje između reči i govora tela. Ko previše objašnjava, obično krije istinu.",
+        s: "Koristi tišinu kao alat. Pusti ih da pričaju dok se sami ne zapetljaju u svoju mrežu."
+    },
+    {
+        n: "Kontrola Agresije",
+        c: "Psihijatrija / Bezbednost",
+        o: "Upravljanje korisnicima koji postaju fizički ili verbalno nasilni.",
+        u: "Deeskalacija glasom. Asimetrični stav (stani sa strane, nikad direktno ispred).",
+        s: "Zapamti: Ti si zid. Tvoja smirenost je tvoje najjače oružje. Ne sklanjaj se, ali ne provociraj."
+    },
+
+    // --- BIOMEHANIKA & BORILAČKE (AIKIDO/JUDO) ---
+    {
+        n: "Centar Ravnoteže (Hara)",
+        c: "Borilačke Veštine / Biomehanika",
+        o: "Tačka u donjem delu stomaka odakle kreće sva sila.",
+        u: "Kod tvojih 170cm i 97kg, tvoj centar je izuzetno nizak i stabilan. Koristi to.",
+        s: "Prilikom okretanja teških korisnika u krevetu, ne koristi leđa. Savij kolena, spusti centar i rotiraj iz kuka."
+    },
+
+    // --- NEGA & GERONTOLOGIJA ---
+    {
+        n: "Saturacija Kiseonika (SpO2)",
+        c: "Interna Medicina / Dijagnostika",
+        o: "Nivo zasićenosti krvi kiseonikom. Normalno iznad 95%.",
+        u: "Pad ispod 92% je crveni alarm. Proveri da li su prsti pacijenta hladni (lažan rezultat).",
+        s: "Kod pušača i hroničnih bolesnika (HBP), niže vrednosti su 'normala', ali prati promenu boje lica."
     }
 ];

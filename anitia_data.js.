@@ -1,0 +1,42 @@
+const ANITIA_BASE = {
+    "bolesti": [
+        {
+            "naziv": "Alchajmer (Alzheimer)",
+            "termin": "Kognitivni deficit",
+            "opis": "Gubitak pamćenja i dezorijentacija.",
+            "savet": "Validacija emocije. Ne ispravljaj ih ako greše, samo ih umiri."
+        },
+        {
+            "naziv": "Šizofrenija",
+            "termin": "Psihotični proboj",
+            "opis": "Halucinacije (čuje glasove) i paranoja.",
+            "savet": "Asimetrična dominacija. Stoj pod uglom, ne direktno ispred njih."
+        },
+        {
+            "naziv": "Parkinson",
+            "termin": "Rigor i Tremor",
+            "opis": "Ukočenost mišića i kočenje (freezing).",
+            "savet": "Ritmička komanda. Broj naglas 1-2-1-2 da im odblokiraš pokret."
+        },
+        {
+            "naziv": "Demencija",
+            "termin": "SAD sindrom (Sundowning)",
+            "opis": "Agresija i nemir koji raste kako sunce zalazi.",
+            "savet": "Smanji svetlo i buku. Pričaj o njihovoj mladosti (dugoročna memorija)."
+        }
+    ],
+    "vitalni_parametri": [
+        { "naziv": "Vrtoglavica", "opis": "Vertigo. Proveri pritisak i šećer odmah. Može biti i od lekova." },
+        { "naziv": "Gušenje", "opis": "Dispneja. Podigni uzglavlje, otvori prozor, proveri saturaciju." },
+        { "naziv": "Mučnina", "opis": "Nausea. Može biti od hrane, ali i predznak srčanog udara kod starijih." },
+        { "naziv": "Bol u grudima", "opis": "Anginozni bol. Širi se u levu ruku ili vilicu? HITNO ALARM!" },
+        { "naziv": "Hipertenzija", "opis": "Visok pritisak (>140/90). Opasnost od pucanja kapilara u mozgu." },
+        { "naziv": "Hipotenzija", "opis": "Nizak pritisak (<90/60). Opasnost od pada i loma kuka." },
+        { "naziv": "Saturacija", "opis": "Nivo kiseonika. Ispod 92% je kritično za pluća." }
+    ],
+    "lekovi_info": [
+        { "naziv": "Bromazepam", "opis": "Za smirenje i opuštanje mišića. Pazi na preveliku pospanost." },
+        { "naziv": "Lasix", "opis": "Izbacivanje tečnosti. Proveri da li korisnik češće ide u toalet." },
+        { "naziv": "Enalapril", "opis": "Lek za pritisak. Ako je pritisak i dalje visok, ne deluje." }
+    ]
+};

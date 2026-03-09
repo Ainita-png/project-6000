@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA CORE</title>
+    <style>
+        body { background: #000; color: #ddd; font-family: monospace; padding: 15px; text-transform: uppercase; }
+        .h { border-bottom: 2px solid #f00; margin-bottom: 20px; padding-bottom: 10px; }
+        input { width: 100%; padding: 15px; background: #111; border: 2px solid #444; color: #0f0; font-size: 1.2rem; outline: none; box-sizing: border-box; }
+        #r { margin-top: 20px; padding: 15px; background: #080808; border-left: 5px solid #0f0; display: none; }
+        .a { background: #1a0000; border: 1px dashed #f00; padding: 10px; margin-top: 10px; color: #f99; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="h">
+    <div style="color:#0f0; font-size:0.7rem;">SYSTEM ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="margin:5px 0 0 0;">AiNiTA v2.1</h1>
+</div>
+
+<input type="text" id="i" placeholder="Kucaj: VRT, BROM, ALC, SIZ..." oninput="f()">
+
+<div id="r"></div>
+
+<script>
+const D = [
+    {n: "Vrtoglavica", o: "Proveri pritisak i secer.", s: "Neka korisnik sedne odmah. Ne ostavljaj ga samog."},
+    {n: "Alchajmer", o: "Dezorijentacija i gubitak pamcenja.", s: "Validacija bez ispravljanja. Preusmeri paznju nezno."},
+    {n: "Sizofrenija", o: "Paranoja i halucinacije.", s: "Stoj pod uglom od 45 stepeni. Ne gledaj direktno u oci dugo."},
+    {n: "Parkinson", o: "Ukocenost i drhtanje.", s: "Koristi ritam 1-2-1-2 da probijes blokadu pokreta."},
+    {n: "Saturacija", o: "Kiseonik u krvi.", s: "Ispod 92% je ALARM. Podigni uzglavlje, otvori prozor."},
+    {n: "Bromazepam", o: "Za smirenje. Pazi na pospanost.", s: "Visok rizik od pada. Proveri disanje."},
+    {n: "Hipotenzija", o: "Nizak pritisak.", s: "Opasnost od nesvestice. Podigni mu noge ako moze."},
+    {n: "Hipertenzija", o: "Visok pritisak.", s: "Rizik od sloga. Mir, tisina i lek po semi."}
+];
+
+function f() {
+    let q = document.getElementById('i').value.toLowerCase();
+    let res = document.getElementById('r');
+    if (q.length < 2) { res.style.display = 'none'; return; }
+
+    // Pretraga koja prasta greske u kucanju (zamenjuje j sa z)
+    let search = q.replace('j', 'z');
+    let m = D.find(item => item.n.toLowerCase().includes(q) || item.n.toLowerCase().includes(search));
+
+    if (m) {
+        res.style.display = 'block';
+        res.innerHTML = `<h2 style="color:#0f0;margin:0;">${m.n}</h2><p><strong>INFO:</strong> ${m.o}</p><div class="a"><strong>STRATEGIJA:</strong><br>${m.s}</div>`;
+    } else {
+        res.style.display = 'none';
+    }
+}
+</script>
+</body>
+</html>

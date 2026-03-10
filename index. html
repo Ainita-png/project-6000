@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AiNiTA | 6000</title>
+    <style>
+        body { background: #020202; color: #a0a0a0; font-family: 'Courier New', monospace; padding: 15px; margin: 0; }
+        .header { border-left: 5px solid #f00; padding: 20px; margin-bottom: 20px; background: rgba(255,0,0,0.05); }
+        .status { color: #0f0; text-shadow: 0 0 10px #0f0; font-size: 0.75rem; letter-spacing: 2px; }
+        input { width: 100%; padding: 22px; background: #080808; border: 1px solid #333; color: #0f0; font-size: 1.4rem; outline: none; border-radius: 4px; box-sizing: border-box; border-bottom: 3px solid #f00; }
+        #results { margin-top: 25px; }
+        .card { background: #0a0a0a; border: 1px solid #222; padding: 20px; margin-bottom: 20px; border-left: 6px solid #0f0; border-radius: 2px; }
+        .tag { color: #f00; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .protocol { background: rgba(255,0,0,0.1); border: 1px dashed #f00; padding: 15px; margin-top: 15px; color: #ff9d9d; }
+        h2 { color: #fff; margin: 0 0 10px 0; font-size: 1.5rem; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="status">SYSTEM ONLINE // ARCHITECT MODE ACTIVE // 6000 MILES AHEAD</div>
+    <h1 style="color:#fff; margin:5px 0;">AiNiTA UNIVERZITET</h1>
+</div>
+
+<input type="text" id="search" placeholder="PITAJ BILO ŠTA (PRITISAK, PSIHO, LEK)..." oninput="runEngine()">
+
+<div id="results"></div>
+
+<script>
+const KORPUS = [
+    // --- KARDIO & VITALNE FUNKCIJE ---
+    {
+        n: "Visok Krvni Pritisak (Hipertenzija)",
+        c: "Kardiologija / Hitno",
+        o: "Pritisak iznad 180/110 mmHg. Kritična opasnost od moždanog udara.",
+        u: "Mirovanje, polusedeći položaj. Merenje na 15 min. Bez naglih pokreta.",
+        s: "Tvoj mirni autoritet obara pritisak pacijentu. Ne pokazuj paniku."
+    },
+    {
+        n: "Nizak Krvni Pritisak (Hipotenzija)",
+        c: "Kardiologija / Hitno",
+        o: "Pad ispod 90/60 mmHg. Rizik od kolapsa i povreda pri padu.",
+        u: "Podigni noge pacijenta (Trendelenburg položaj). Hidratacija.",
+        s: "Proveri da li je pacijent uzeo Lasix na prazan stomak. To je čest uzrok."
+    },
+    {
+        n: "Saturacija (SpO2)",
+        c: "Pulmologija / Dijagnostika",
+        o: "Nivo kiseonika u krvi. Alarm ako padne ispod 92%.",
+        u: "Proveri da li su prsti hladni. Postavi pacijenta u uspravan položaj za lakše disanje.",
+        s: "Kod hroničnih bolesnika (HBP), 90% može biti 'normala', ali prati promenu boje lica."
+    },
+
+    // --- FARMAKOLOGIJA (MESO) ---
+    {
+        n: "Bromazepam",
+        c: "Farmakologija / Sedativ",
+        o: "Lek za smirenje napetosti. Kod starijih izaziva jaku mišićnu relaksaciju.",
+        u: "Strogo pratiti stabilnost pri hodu. Ogroman rizik od preloma kuka.",
+        s: "Ako je korisnik već pospan ili konfuzan, stopiraj dozu i prijavi."
+    },
+    {
+        n: "Madopar (Levodopa)",
+        c: "Farmakologija / Parkinson",
+        o: "Zamenjuje dopamin. Ključan za pokretljivost i smanjenje tremora.",
+        u: "Hrana bogata proteinima (meso, mleko) blokira lek. Davati van obroka.",
+        s: "Kod blokade pokreta, koristi ritmičko lupkanje da probiješ neurološki blok."
+    },
+    {
+        n: "Lasix (Furosemid)",
+        c: "Farmakologija / Diuretik",
+        o: "Izbacuje višak vode. Naglo snižava pritisak i rasterećuje srce.",
+        u: "Prati diurezu (mokrenje) i nivo kalijuma (grčevi u nogama).",
+        s: "Pazi na dehidrataciju. Ako pacijent postane prebrzo konfuzan, isprao je minerale."
+    },
+
+    // --- MRAČNA PSIHOLOGIJA & STRATEGIJA ---
+    {
+        n: "Analiza Sagovornika",
+        c: "Mračna Psihologija / Arhitekta",
+        o: "Skeniranje namera kroz mikro-ekspresije i ton glasa.",
+        u: "Prati neslaganje reči i tela. Ko previše objašnjava, obično laže.",
+        s: "Koristi tišinu. Pusti ih da pričaju dok se sami ne zapetljaju u svoju mrežu."
+    },
+    {
+        n: "Kontrola Agresije",
+        c: "Psihologija / Bezbednost",
+        o: "Deeskalacija nasilnog ponašanja kod korisnika sa demencijom.",
+        u: "Ne ulazi u direktan sukob. Koristi asimetrični stav (stani sa strane
+        

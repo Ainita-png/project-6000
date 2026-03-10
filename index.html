@@ -1,42 +1,249 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-body{background:#000;color:#fff;font-family:monospace;padding:15px;margin:0}
-.h{border-bottom:1px solid #333;margin-bottom:15px;padding-bottom:10px}
-.btn-panic{background:#f00;color:#fff;display:block;text-align:center;padding:15px;font-weight:bold;text-decoration:none;border-radius:5px;margin-bottom:20px;border:2px solid #fff;font-size:1.2rem}
-input{width:100%;padding:15px;background:#111;border:1px solid #444;color:#0f0;box-sizing:border-box;margin-bottom:10px}
-.card{background:#0a0a0a;border:1px solid #333;padding:12px;margin:10px 0;border-left:4px solid #f00}
-.tag{color:#f00;font-size:0.7rem;font-weight:bold;text-transform:uppercase}
-.det{display:none;margin-top:10px;color:#ccc;font-size:0.9rem;border-top:1px solid #222;padding-top:10px}
-.s{background:rgba(255,0,0,0.1);padding:8px;margin-top:10px;color:#ff9d9d;border:1px dashed #f00}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiNiTA 6000 - UNIVERSITY CORE</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #ccc;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            border-left: 5px solid #f00;
+            padding-left: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .status-light {
+            color: #0f0;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .panic-btn {
+            background-color: #f00;
+            color: #fff;
+            display: block;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: none;
+            border: 2px solid #fff;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255,0,0,0.5);
+        }
+
+        input#search {
+            width: 100%;
+            padding: 18px;
+            background: #111;
+            border: 1px solid #444;
+            color: #0f0;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input#search:focus {
+            border-color: #0f0;
+        }
+
+        .card {
+            background: #080808;
+            border: 1px solid #222;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f00;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: #444;
+            background: #111;
+        }
+
+        .category-tag {
+            color: #f00;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .card h2 {
+            margin: 0 0 10px 0;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+        }
+
+        .instruction-box {
+            background: #1a1a1a;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #333;
+        }
+
+        .savet-6000 {
+            background: rgba(255,0,0,0.1);
+            color: #ff9d9d;
+            padding: 10px;
+            margin-top: 15px;
+            border-right: 3px solid #f00;
+            font-style: italic;
+        }
+
+        strong { color: #fff; }
+    </style>
 </head>
 <body>
-<div class="h"><small style="color:#0f0">● ARCHITECT 6000 // STATUS: ONLINE</small><h3>AiNiTA BUNKER V3</h3></div>
-<a href="tel:019547124" class="btn-panic">🚨 HITNA POMOĆ: 019 547 124</a>
-<input type="text" id="i" placeholder="TRAŽI..." oninput="r()">
-<div id="v"></div>
-<script>
-const K = [
-{n:"Nifelat / Katopil",c:"PRITISAK",o:"Hitno obaranje skoka.",u:"Pod jezik. Katopil deluje za 15min.",s:"Prati da pritisak ne padne naglo."},
-{n:"Yurunex / Lasix",c:"IZBACIVANJE",o:"Diuretici za vodu i otoke.",u:"Dati ujutru. Yurunex je jači.",s:"Prati mokrenje i konfuziju."},
-{n:"Analgin / Paracetamol",c:"BOL/TEMP",o:"Bolovi i temperatura.",u:"Analgin za jači bol, Paracetamol lakši.",s:"Pazi na stomak!"},
-{n:"Aparat / Oksimetar",c:"OPREMA",o:"Merenje pritiska i kiseonika.",u:"Kiseonik ispod 90% je alarm.",s:"Mir 5min pre merenja."},
-{n:"Jod / Vioplex / Gaze",c:"RANE",o:"Dezinfekcija i previjanje.",u:"Jod, pa Vioplex sprej, pa gaza.",s:"Vioplex sprečava lepljenje gaze."},
-{n:"Dekubiti - Nega",c:"RANE",o:"Lečenje rana od ležanja.",u:"Okretanje na 2h, kreme sa cinkom.",s:"Ako rana potamni, zovi doktora."},
-{n:"Pritisak - Stabilizacija",c:"1. POMOĆ",o:"Protokol kod naglog skoka.",u:"Uspravi, tišina, lek pod jezik.",s:"Mirna ruka Arhitekto!"},
-{n:"Loperamid / Probiotik",c:"STOMAK",o:"Dijareja i obnova flore.",u:"Loperamid (kočnica), Probiotik (lek).",s:"Piti puno tečnosti (rehidracija)."},
-{n:"Klometol",c:"STOMAK",o:"Protiv mučnine.",u:"30 min pre jela.",s:"Pomaže da pacijent ne povrati lekove."}
-];
-function r(){
-const q=document.getElementById('i').value.toLowerCase();const v=document.getElementById('v');v.innerHTML="";
-if(q.length<2)return;
-K.filter(x=>x.n.toLowerCase().includes(q)||x.c.toLowerCase().includes(q)).forEach(m=>{
-v.innerHTML+=`<div class="card" onclick="let d=this.querySelector('.det');d.style.display=d.style.display==='block'?'none':'block'"><span class="tag">${m.c}</span><h2>${m.n}</h2><div class="det"><b>OPIS:</b> ${m.o}<br><b>UPUTSTVO:</b> ${m.u}<div class="s"><b>SAVET:</b> ${m.s}</div></div></div>`;
-});}
-</script>
+
+    <div class="header">
+        <span class="status-light">● SYSTEM ACTIVE // ARCHITECT 6000</span>
+        <h1>AiNiTA UNIVERZITET</h1>
+        <p style="font-size: 0.8rem; color: #666;">"Zapamti ovo, zaboravi sve / Ne sklanjam se, zaobiđi me"</p>
+    </div>
+
+    <a href="tel:019547124" class="panic-btn">🚨 HITNA POMOĆ: 019 547 124</a>
+
+    <input type="text" id="search" placeholder="TRAŽI (LEK, APARAT, RANA, PRVA POMOĆ)..." oninput="filterData()">
+
+    <div id="results"></div>
+
+    <script>
+        const KORPUS = [
+            {
+                n: "Nifelat / Katopil",
+                c: "PRITISAK - HITNO",
+                o: "Lekovi za momentalno obaranje kritično visokog pritiska.",
+                u: "Daje se isključivo <strong>POD JEZIK</strong>. Pacijent mora da sedi ili leži mirno. Katopil deluje za 15-20 min. Nifelat je agresivniji.",
+                s: "Prati da pritisak ne padne prebrzo (ispod 100/60) jer to može izazvati kolaps ili šlog kod starih."
+            },
+            {
+                n: "Pritisak - Stabilizacija",
+                c: "PRVA POMOĆ",
+                o: "Protokol kada pritisak pređe 180/110.",
+                u: "1. Polusedeći položaj (da krv ne ide u glavu). 2. Apsolutna tišina, bez televizora ili priče. 3. Lek pod jezik. 4. Merenje na svakih 15 min dok ne padne ispod 150.",
+                s: "Mirna ruka Arhitekto! Tvoja panika diže pritisak pacijentu više nego bilo šta drugo."
+            },
+            {
+                n: "Yurunex / Lasix",
+                c: "IZBACIVANJE TEČNOSTI",
+                o: "Diuretici koji teraju bubrege da izbace višak vode iz organizma.",
+                u: "Daju se ujutru. Yurunex je moderniji i jači. Ako su noge otečene kao baloni, ovo je ključ.",
+                s: "Pazi na 'ispiranje' kalijuma. Ako se jave grčevi u nogama ili pacijent počne da priča nepovezano, gubi minerale."
+            },
+            {
+                n: "Analgin / Paracetamol",
+                c: "BOL I TEMPERATURA",
+                o: "Osnovni analgetici za ublažavanje bolova i snižavanje temperature.",
+                u: "Analgin je jači, daje se kod jakih glavobolja ili bolova u kostima. Paracetamol je blaži i čuva jetru. Ne mešati više vrsta odjednom.",
+                s: "Uvek proveri da li je pacijent jeo pre Analgina. Nolpaza je obavezna ako se piju često."
+            },
+            {
+                n: "Jod / Vioplex / Gaze",
+                c: "NEGA RANA",
+                o: "Komplet za tretiranje ogrebotina, posekotina ili početnih dekubita.",
+                u: "1. Očistiti ranu Jodom. 2. Naprskati Vioplex sprej (on stvara film i leči infekciju). 3. Prekriti sterilnom gazom i fiksirati flasterom.",
+                s: "Vioplex je zakon jer sprečava da se gaza zalepi za ranu. Menjati previjanje jednom dnevno."
+            },
+            {
+                n: "Dekubiti - Lečenje",
+                c: "NEGA NEPOKRETNIH",
+                o: "Rane koje nastaju od pritiska tela na podlogu (dušek).",
+                u: "Glavno pravilo: <strong>OKRETANJE NA 2 SATA</strong>. Levo, desno, leđa. Koža mora biti suva. Koristiti kreme sa cinkom (Pavlovićeva ili Sudocrem).",
+                s: "Ako se pojavi crna tačka na trtici, to je mrtvo tkivo. Tada Vioplex i Jod ne pomažu, treba hirurg."
+            },
+            {
+                n: "Aparat za pritisak / Oksimetar",
+                c: "DIJAGNOSTIKA",
+                o: "Instrumenti za praćenje stanja u bunkeru.",
+                u: "Oksimetar na kažiprst: Kiseonik (SpO2) mora biti iznad 94%. Puls ispod 100 u miru. Pritisak: Manžetna dva prsta iznad lakta.",
+                s: "Ako saturacija (kiseonik) padne ispod 90, pacijent se 'davi' na suvom. Odmah uspravan položaj i pozovi Hitnu."
+            },
+            {
+                n: "Loperamid / Probiotik",
+                c: "STOMAK - DIJAREJA",
+                o: "Zaustavljanje proliva i oporavak creva.",
+                u: "Loperamid je kočnica - pije se samo dok proliv ne stane. Probiotik je hrana za creva - pije se minimum 7 dana.",
+                s: "Dijareja kod starih vodi u dehidrataciju za par sati. Odmah davati 'Orosal' ili slanu supu."
+            },
+            {
+                n: "Klometol",
+                c: "MUČNINA",
+                o: "Sprečava povraćanje i mučninu.",
+                u: "Daje se 30 minuta pre jela. Pomaže i kod 'zastoja' želuca da krene varenje.",
+                s: "Ako pacijent povrati lek za pritisak, moraš sačekati da se smiri stomak Klometolom pa ponoviti dozu."
+            },
+            {
+                n: "Madopar",
+                c: "LEKOVI - PARKINSON",
+                o: "Osnovna terapija za kretanje i dopamin.",
+                u: "Stroga satnica. Proteini (meso, mleko) blokiraju lek. Razmak između obroka i leka bar 30-45 min.",
+                s: "Petnaest minuta kašnjenja znači sate ukočenosti. Ne dozvoli to."
+            }
+        ];
+
+        function filterData() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = "";
+
+            if (query.length < 2) return;
+
+            const filtered = KORPUS.filter(item => 
+                item.n.toLowerCase().includes(query) || 
+                item.c.toLowerCase().includes(query)
+            );
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = function() {
+                    const d = this.querySelector('.details');
+                    d.style.display = d.style.display === 'block' ? 'none' : 'block';
+                };
+
+                card.innerHTML = `
+                    <span class="category-tag">${item.c}</span>
+                    <h2>${item.n}</h2>
+                    <p style="margin:0; font-size:0.9rem; color:#888;">${item.o}</p>
+                    <div class="details">
+                        <div class="instruction-box">
+                            <strong>UPUTSTVO:</strong><br>${item.u}
+                        </div>
+                        <div class="savet-6000">
+                            <strong>SAVET 6000:</strong> ${item.s}
+                        </div>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+    </script>
 </body>
 </html>

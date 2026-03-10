@@ -15,24 +15,21 @@ input{width:100%;padding:15px;background:#111;border:1px solid #444;color:#0f0;b
 </style>
 </head>
 <body>
-<div class="h"><small style="color:#0f0">● ARCHITECT 6000</small><h3>AiNiTA BUNKER V3</h3></div>
-
-<a href="tel:019547124" class="btn-panic">🚨 HITNA POMOĆ: POZOVI</a>
-
-<input type="text" id="i" placeholder="TRAŽI LEK, APARAT, RANE..." oninput="r()">
+<div class="h"><small style="color:#0f0">● ARCHITECT 6000 // STATUS: ONLINE</small><h3>AiNiTA BUNKER V3</h3></div>
+<a href="tel:019547124" class="btn-panic">🚨 HITNA POMOĆ: 019 547 124</a>
+<input type="text" id="i" placeholder="TRAŽI..." oninput="r()">
 <div id="v"></div>
-
 <script>
 const K = [
-{n:"Nifelat / Katopil",c:"PRITISAK",o:"Hitno obaranje.",u:"Pod jezik (sublingvalno).",s:"Deluje brzo. Prati pacijenta da ne klone."},
-{n:"Yurunex / Lasix",c:"LEK",o:"Izbacivanje vode.",u:"Dati ujutru. Prati mokrenje.",s:"Gubitak tečnosti može izazvati konfuziju."},
-{n:"Analgin / Paracetamol",c:"BOL",o:"Protiv bolova i temp.",u:"Paracetamol je bezbedniji za stomak.",s:"Maksimalno 4 tablete paracetamola dnevno."},
-{n:"Aparati / Oksimetar",c:"OPREMA",o:"Pritisak, Kiseonik, Šećer.",u:"Kiseonik ispod 90% je alarm!",s:"Miri uvek 5 min pre merenja pritiska."},
-{n:"Jod / Vioplex / Gaze",c:"RANE",o:"Dezinfekcija.",u:"Očisti jodom, poprskaj Vioplexom, pokrij gazom.",s:"Vioplex sprečava da se gaza zalepi za ranu."},
-{n:"Dekubiti",c:"NEGA",o:"Rane od ležanja.",u:"Okretanje na 2h. Čista i suva postelja.",s:"Prevencija je bitnija od lečenja."},
-{n:"Loperamid / Probiotik",c:"STOMAK",o:"Protiv dijareje.",u:"Prvo loperamid, pa probiotik 2h posle.",s:"Piti puno vode sa elektrolitima."},
-{n:"Klometol",c:"STOMAK",o:"Protiv mučnine.",u:"30 min pre jela.",s:"Ne davati ako stomak miruje (nema stolice)."},
-{n:"Stabilizacija",c:"1. POMOĆ",o:"Protokol kod skoka pritiska.",u:"Uspravan položaj, tišina, lek pod jezik.",s:"Tvoja smirenost prenosi se na pacijenta."}
+{n:"Nifelat / Katopil",c:"PRITISAK",o:"Hitno obaranje skoka.",u:"Pod jezik. Katopil deluje za 15min.",s:"Prati da pritisak ne padne naglo."},
+{n:"Yurunex / Lasix",c:"IZBACIVANJE",o:"Diuretici za vodu i otoke.",u:"Dati ujutru. Yurunex je jači.",s:"Prati mokrenje i konfuziju."},
+{n:"Analgin / Paracetamol",c:"BOL/TEMP",o:"Bolovi i temperatura.",u:"Analgin za jači bol, Paracetamol lakši.",s:"Pazi na stomak!"},
+{n:"Aparat / Oksimetar",c:"OPREMA",o:"Merenje pritiska i kiseonika.",u:"Kiseonik ispod 90% je alarm.",s:"Mir 5min pre merenja."},
+{n:"Jod / Vioplex / Gaze",c:"RANE",o:"Dezinfekcija i previjanje.",u:"Jod, pa Vioplex sprej, pa gaza.",s:"Vioplex sprečava lepljenje gaze."},
+{n:"Dekubiti - Nega",c:"RANE",o:"Lečenje rana od ležanja.",u:"Okretanje na 2h, kreme sa cinkom.",s:"Ako rana potamni, zovi doktora."},
+{n:"Pritisak - Stabilizacija",c:"1. POMOĆ",o:"Protokol kod naglog skoka.",u:"Uspravi, tišina, lek pod jezik.",s:"Mirna ruka Arhitekto!"},
+{n:"Loperamid / Probiotik",c:"STOMAK",o:"Dijareja i obnova flore.",u:"Loperamid (kočnica), Probiotik (lek).",s:"Piti puno tečnosti (rehidracija)."},
+{n:"Klometol",c:"STOMAK",o:"Protiv mučnine.",u:"30 min pre jela.",s:"Pomaže da pacijent ne povrati lekove."}
 ];
 function r(){
 const q=document.getElementById('i').value.toLowerCase();const v=document.getElementById('v');v.innerHTML="";

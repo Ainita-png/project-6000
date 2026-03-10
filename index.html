@@ -1,81 +1,45 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AiNiTA 6000 | CORE</title>
-    <style>
-        body { background: #000; color: #aaa; font-family: 'Courier New', monospace; padding: 15px; margin: 0; }
-        .header { border-left: 5px solid #f00; padding: 15px; margin-bottom: 20px; background: rgba(255,0,0,0.05); }
-        input { width: 100%; padding: 20px; background: #0a0a0a; border: 1px solid #333; color: #0f0; font-size: 1.3rem; outline: none; border-bottom: 3px solid #f00; box-sizing: border-box; }
-        #results { margin-top: 20px; }
-        .card { background: #050505; border: 1px solid #1a1a1a; padding: 15px; margin-bottom: 10px; border-left: 4px solid #0f0; cursor: pointer; }
-        .tag { color: #f00; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
-        h2 { color: #fff; margin: 5px 0; font-size: 1.2rem; }
-        .details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #222; font-size: 0.9rem; line-height: 1.4; }
-        .prot { background: rgba(255,0,0,0.1); border: 1px dashed #400; padding: 10px; margin-top: 10px; color: #ff9d9d; }
-        .cat-bar { margin-bottom: 15px; display: flex; gap: 5px; overflow-x: auto; }
-        .cat-btn { background: #111; border: 1px solid #333; color: #777; padding: 8px 12px; font-size: 0.7rem; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{background:#000;color:#fff;font-family:monospace;padding:15px;margin:0}
+.h{border-bottom:1px solid #333;margin-bottom:15px;padding-bottom:10px}
+.btn-panic{background:#f00;color:#fff;display:block;text-align:center;padding:15px;font-weight:bold;text-decoration:none;border-radius:5px;margin-bottom:20px;border:2px solid #fff;font-size:1.2rem}
+input{width:100%;padding:15px;background:#111;border:1px solid #444;color:#0f0;box-sizing:border-box;margin-bottom:10px}
+.card{background:#0a0a0a;border:1px solid #333;padding:12px;margin:10px 0;border-left:4px solid #f00}
+.tag{color:#f00;font-size:0.7rem;font-weight:bold;text-transform:uppercase}
+.det{display:none;margin-top:10px;color:#ccc;font-size:0.9rem;border-top:1px solid #222;padding-top:10px}
+.s{background:rgba(255,0,0,0.1);padding:8px;margin-top:10px;color:#ff9d9d;border:1px dashed #f00}
+</style>
 </head>
 <body>
-<div class="header">
-    <div style="color: #0f0; font-size: 0.7rem;">● SYSTEM ACTIVE // ARCHITECT 6000</div>
-    <h1 style="color:#fff; margin:5px 0; font-size: 1.4rem;">AiNiTA UNIVERZITET</h1>
-</div>
-<div class="cat-bar">
-    <button class="cat-btn" onclick="filterCat('HITNO')">HITNO</button>
-    <button class="cat-btn" onclick="filterCat('LEKOVI')">LEKOVI</button>
-    <button class="cat-btn" onclick="filterCat('PSIHO')">PSIHO</button>
-</div>
-<input type="text" id="search" placeholder="TRAŽI..." oninput="run()">
-<div id="results"></div>
+<div class="h"><small style="color:#0f0">● ARCHITECT 6000</small><h3>AiNiTA BUNKER V3</h3></div>
+
+<a href="tel:019547124" class="btn-panic">🚨 HITNA POMOĆ: POZOVI</a>
+
+<input type="text" id="i" placeholder="TRAŽI LEK, APARAT, RANE..." oninput="r()">
+<div id="v"></div>
 
 <script>
-const KORPUS = [
-    { 
-        n: "Visok Pritisak", c: "HITNO", 
-        o: "Stanje iznad 180/110 mmHg. Mozak i srce su pod direktnim udarom.", 
-        u: "Pacijenta odmah uspraviti u polusedeći položaj (da se smanji pritisak u glavi). Obezbediti potpunu tišinu. Meriti pritisak na svakih 15 min i zapisivati.", 
-        s: "Za suprugu: Tvoj miran glas je ovde 50% leka. Ako on vidi da si ti u panici, pritisak mu neće pasti." 
-    },
-    { 
-        n: "Madopar", c: "LEKOVI", 
-        o: "Lek za Parkinsonovu bolest koji nadoknađuje dopamin u mozgu.", 
-        u: "Mora se dati tačno u minut. Proteini (meso, mleko) blokiraju njegovu apsorpciju, pa se daje 30 min pre ili 60 min posle jela.", 
-        s: "Za suprugu: Ako zakasniš sa dozom, pacijent može da se 'zamrzne' i postane potpuno nepokretan." 
-    },
-    { 
-        n: "Hara - Stabilnost", c: "PSIHO", 
-        o: "Tehnika korišćenja sopstvene težine (97kg) za kontrolu situacije bez napora.", 
-        u: "Ne vuci pacijenta rukama. Spusti svoje težište, savij kolena i koristi snagu kukova.", 
-        s: "Za suprugu: Arhitekta koristi biomehaniku, a ne sirovu snagu. Čuvaj svoja leđa koristeći njegovu masu kao polugu." 
-    }
+const K = [
+{n:"Nifelat / Katopil",c:"PRITISAK",o:"Hitno obaranje.",u:"Pod jezik (sublingvalno).",s:"Deluje brzo. Prati pacijenta da ne klone."},
+{n:"Yurunex / Lasix",c:"LEK",o:"Izbacivanje vode.",u:"Dati ujutru. Prati mokrenje.",s:"Gubitak tečnosti može izazvati konfuziju."},
+{n:"Analgin / Paracetamol",c:"BOL",o:"Protiv bolova i temp.",u:"Paracetamol je bezbedniji za stomak.",s:"Maksimalno 4 tablete paracetamola dnevno."},
+{n:"Aparati / Oksimetar",c:"OPREMA",o:"Pritisak, Kiseonik, Šećer.",u:"Kiseonik ispod 90% je alarm!",s:"Miri uvek 5 min pre merenja pritiska."},
+{n:"Jod / Vioplex / Gaze",c:"RANE",o:"Dezinfekcija.",u:"Očisti jodom, poprskaj Vioplexom, pokrij gazom.",s:"Vioplex sprečava da se gaza zalepi za ranu."},
+{n:"Dekubiti",c:"NEGA",o:"Rane od ležanja.",u:"Okretanje na 2h. Čista i suva postelja.",s:"Prevencija je bitnija od lečenja."},
+{n:"Loperamid / Probiotik",c:"STOMAK",o:"Protiv dijareje.",u:"Prvo loperamid, pa probiotik 2h posle.",s:"Piti puno vode sa elektrolitima."},
+{n:"Klometol",c:"STOMAK",o:"Protiv mučnine.",u:"30 min pre jela.",s:"Ne davati ako stomak miruje (nema stolice)."},
+{n:"Stabilizacija",c:"1. POMOĆ",o:"Protokol kod skoka pritiska.",u:"Uspravan položaj, tišina, lek pod jezik.",s:"Tvoja smirenost prenosi se na pacijenta."}
 ];
-
-function run(filter = '') {
-    const q = document.getElementById('search').value.toLowerCase();
-    const res = document.getElementById('results');
-    res.innerHTML = "";
-    let filtered = KORPUS;
-    if (filter) filtered = KORPUS.filter(i => i.c === filter);
-    else if (q.length < 2) return;
-    else filtered = KORPUS.filter(i => i.n.toLowerCase().includes(q) || i.o.toLowerCase().includes(q));
-
-    filtered.forEach(m => {
-        res.innerHTML += `
-            <div class="card" onclick="this.querySelector('.details').style.display = this.querySelector('.details').style.display === 'block' ? 'none' : 'block'">
-                <span class="tag">${m.c}</span>
-                <h2>${m.n}</h2>
-                <div class="details">
-                    <p><strong>DETALJNO:</strong> ${m.o}</p>
-                    <p style="color:#0f0;"><strong>UPUTSTVO:</strong> ${m.u}</p>
-                    <div class="prot"><strong>SAVET ZA SUPRUGU:</strong><br>${m.s}</div>
-                </div>
-            </div>`;
-    });
-}
-function filterCat(cat) { document.getElementById('search').value = ''; run(cat); }
+function r(){
+const q=document.getElementById('i').value.toLowerCase();const v=document.getElementById('v');v.innerHTML="";
+if(q.length<2)return;
+K.filter(x=>x.n.toLowerCase().includes(q)||x.c.toLowerCase().includes(q)).forEach(m=>{
+v.innerHTML+=`<div class="card" onclick="let d=this.querySelector('.det');d.style.display=d.style.display==='block'?'none':'block'"><span class="tag">${m.c}</span><h2>${m.n}</h2><div class="det"><b>OPIS:</b> ${m.o}<br><b>UPUTSTVO:</b> ${m.u}<div class="s"><b>SAVET:</b> ${m.s}</div></div></div>`;
+});}
 </script>
 </body>
 </html>

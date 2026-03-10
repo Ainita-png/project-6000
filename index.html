@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AiNiTA 6000 | PWA</title>
+    <title>AiNiTA 6000 | OFFLINE</title>
     <style>
         body { background: #000; color: #aaa; font-family: 'Courier New', monospace; padding: 15px; margin: 0; }
         .header { border-left: 5px solid #f00; padding: 15px; margin-bottom: 20px; background: rgba(255,0,0,0.05); }
@@ -15,51 +15,39 @@
         h2 { color: #fff; margin: 0 0 10px 0; font-size: 1.2rem; }
         .prot { background: rgba(255,0,0,0.1); border: 1px dashed #400; padding: 10px; margin-top: 10px; color: #ff9d9d; font-size: 0.9rem; }
         strong { color: #0f0; }
-        .cat-btn { background: #111; border: 1px solid #333; color: #777; padding: 5px 10px; font-size: 0.7rem; margin-right: 5px; cursor: pointer; }
+        .cat-bar { margin-bottom: 15px; display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; }
+        .cat-btn { background: #111; border: 1px solid #333; color: #777; padding: 8px 12px; font-size: 0.7rem; white-space: nowrap; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="status">● SYSTEM ACTIVE // ARCHITECT 6000 // OFFLINE READY</div>
+    <div class="status">● SYSTEM ONLINE // ARCHITECT MODE // 6000</div>
     <h1 style="color:#fff; margin:5px 0; font-size: 1.4rem;">AiNiTA UNIVERZITET</h1>
 </div>
 
-<div style="margin-bottom: 15px;">
+<div class="cat-bar">
     <button class="cat-btn" onclick="filterCat('HITNO')">HITNO</button>
-    <button class="cat-btn" onclick="filterCat('LEK')">LEKOVI</button>
+    <button class="cat-btn" onclick="filterCat('LEKOVI')">LEKOVI</button>
     <button class="cat-btn" onclick="filterCat('PSIHO')">PSIHO</button>
     <button class="cat-btn" onclick="filterCat('')">SVE</button>
 </div>
 
-<input type="text" id="search" placeholder="TRAŽI (PRITISAK, MADOPAR, HARA)..." oninput="run()">
+<input type="text" id="search" placeholder="TRAŽI (LEK, PRITISAK, HARA)..." oninput="run()">
 
 <div id="results"></div>
 
 <script>
 const KORPUS = [
-    // MEDICINA I HITNA STANJA
-    { n: "Visok Pritisak", c: "HITNO", o: "Preko 180/110 mmHg. Opasnost od udara.", u: "Polusedeći položaj, mir, kontrola na 15 min.", s: "Tvoj mir je lek. Arhitekta ne paniči pred pacijentom." },
+    { n: "Visok Pritisak", c: "HITNO", o: "Preko 180/110 mmHg. Opasnost od udara.", u: "Polusedeći položaj, mir, kontrola na 15 min.", s: "Tvoj mir je lek. Arhitekta ne paniči." },
     { n: "Nizak Pritisak", c: "HITNO", o: "Ispod 90/60 mmHg. Rizik od kolapsa.", u: "Podigni noge (Trendelenburg), tečnost.", s: "Proveri da li je pacijent uzeo Lasix na prazan stomak." },
-    { n: "Gušenje (Aspiracija)", c: "HITNO", o: "Hrana/tečnost u plućima. Crveni alarm.", u: "Uspravi na 90 stepeni. Aspirator spreman.", s: "Krkljanje je zvuk koji ne smeš da ignorišeš." },
-    { n: "Hipoglikemija", c: "HITNO", o: "Šećer ispod 3.9. Hladan znoj, agresija.", u: "Šećer/med ako guta. Ako ne, zovi hitnu.", s: "Agresivan pacijent često nije zao, već gladnog mozga." },
-    { n: "Saturacija", c: "HITNO", o: "Kiseonik u krvi. Alarm ispod 92%.", u: "Uspravi, proveri prohodnost puteva.", s: "Hladni prsti = lažan rezultat. Ugrej šaku." },
-
-    // PROŠIRENI REGISTAR LEKOVA
-    { n: "Bromazepam", c: "LEK", o: "Sedativ. Smiruje, ali opušta mišiće.", u: "Rizik od pada kuka. Prati stabilnost.", s: "Ako pacijent 'beči' oči ili tetura, stopiraj dozu." },
-    { n: "Madopar", c: "LEK", o: "Za Parkinson. Ključan za hod.", u: "Stroga satnica. Proteini blokiraju lek.", s: "15 min kašnjenja pravi haos u neuro-vezama." },
-    { n: "Lasix (Furosemid)", c: "LEK", o: "Izbacuje vodu, obara pritisak.", u: "Prati mokrenje i grčeve (pad kalijuma).", s: "Ispiranje minerala vodi u tešku konfuziju." },
-    { n: "Haldol", c: "LEK", o: "Antipsihotik za jaku agresiju.", u: "Prati ukočenost mišića i gutanje.", s: "Lek koji 'zaključava'. Budi oprezan sa dozom." },
-    { n: "Enalapril", c: "LEK", o: "Za pritisak. Dugotrajno dejstvo.", u: "Može izazvati suv nadražajni kašalj.", s: "Čest uzrok kašlja kod kojeg pluća zvuče čisto." },
-    { n: "Amlodipin", c: "LEK", o: "Blokator kalcijuma za pritisak.", u: "Često izaziva oticanje zglobova.", s: "Ako noge buknu kao baloni, proveri terapiju." },
-    { n: "Nolpaza (Pantoprazol)", c: "LEK", o: "Zaštita želuca od jakih lekova.", u: "Davati ujutru, 30 min pre jela.", s: "Bez ovoga, tvoji pacijenti će brzo dobiti čir." },
-    { n: "Dilatrend", c: "LEK", o: "Beta-blokator. Smiruje srce i pritisak.", u: "Prati puls. Ako je ispod 50, oprez.", s: "Spor puls može izazvati nesvesticu pri ustajanju." },
-
-    // PSIHOLOGIJA I BIOMEHANIKA
-    { n: "Mračna Psihologija - Tišina", c: "PSIHO", o: "Tišina kao alat pritiska i dominacije.", u: "Gledaj u oči, ćuti dok oni ne progovore.", s: "Vakuum tišine natera sagovornika da oda sve tajne." },
-    { n: "Hara (Stabilnost)", c: "PSIHO", o: "Centar mase u donjem delu stomaka.", u: "Kod tvojih 97kg, niska baza je neprobojna.", s: "Rotiraj iz kuka, ne vuci leđima. Čuvaj kičmu." },
-    { n: "Gaslighting Odbrana", c: "PSIHO", o: "Zaštita od manipulacije kolega.", u: "Drži se protokola i onoga što si zapisao.", s: "Tvoj mirni autoritet i papir su jači od svake laži." },
-    { n: "Transfer (Biomehanika)", c: "PSIHO", o: "Podizanje pacijenta pomoću poluge.", u: "Pusti pacijenta da se nagne napred pre dizanja.", s: "Ti si Arhitekta. Koristi pamet, ne samo sirovu snagu." }
+    { n: "Gušenje (Aspiracija)", c: "HITNO", o: "Hrana u plućima. Crveni alarm.", u: "Uspravi na 90 stepeni. Aspirator spreman.", s: "Krkljanje je zvuk koji ne smeš da ignorišeš." },
+    { n: "Bromazepam", c: "LEKOVI", o: "Sedativ. Smiruje, ali opušta mišiće.", u: "Rizik od pada kuka. Prati stabilnost.", s: "Ako pacijent tetura, stopiraj dozu." },
+    { n: "Madopar", c: "LEKOVI", o: "Za Parkinson. Ključan za hod.", u: "Stroga satnica. Proteini blokiraju lek.", s: "15 min kašnjenja pravi haos u pokretu." },
+    { n: "Lasix", c: "LEKOVI", o: "Izbacuje vodu, obara pritisak.", u: "Prati mokrenje i grčeve (pad kalijuma).", s: "Ispiranje minerala vodi u tešku konfuziju." },
+    { n: "Mračna Psihologija - Tišina", c: "PSIHO", o: "Tišina kao alat dominacije.", u: "Gledaj u oči, ćuti dok oni ne progovore.", s: "Vakuum tišine natera sagovornika da se oda." },
+    { n: "Hara (Stabilnost)", c: "PSIHO", o: "Centar mase u stomaku.", u: "Tvojih 97kg je neprobojno u niskom stavu.", s: "Rotiraj iz kuka, ne vuci leđima. Čuvaj kičmu." },
+    { n: "Gaslighting Odbrana", c: "PSIHO", o: "Zaštita od manipulacije kolega.", u: "Drži se protokola i onoga što si zapisao.", s: "Tvoj autoritet je jači od njihove laži." }
 ];
 
 function run(filter = '') {
@@ -90,5 +78,4 @@ function filterCat(cat) {
 }
 </script>
 </body>
-  </html>
-  
+</html>

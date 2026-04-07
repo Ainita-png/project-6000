@@ -124,17 +124,21 @@
         document.getElementById('patient-input').value = '';
     };
 
-    window.registrujHitnu = function() {
+    ž    window.registrujHitnu = function() {
         const ko = document.getElementById('nurse-name').value || "NEPOZNATO";
+        const brojHitne = "019547124"; 
+
+        // 1. Upisuje alarm u Firebase (da supruga vidi odmah)
         push(logsRef, {
             vreme: new Date().toLocaleTimeString('sr-RS'),
             ko: ko,
-            tekst: "!!! POZIV HITNOJ SLUŽBI !!!",
+            tekst: "!!! KRITIČNO: POKRENUT POZIV HITNOJ SLUŽBI !!!",
             hitno: true
         });
-        alert("POZIV HITNOJ REGISTROVAN!");
+
+        // 2. AKTIVIRA POZIV NA TELEFONU
+        window.location.href = "tel:" + brojHitne;
     };
 </script>
-
 </body>
 </html>

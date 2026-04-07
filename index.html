@@ -47,15 +47,16 @@
     import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCU88D_CfthHl5V3y_tb4zTD5LDuQgtpdo",
-        authDomain: "dom-lela-franc.firebaseapp.com",
-        projectId: "dom-lela-franc",
-        storageBucket: "dom-lela-franc.firebasestorage.app",
-        messagingSenderId: "738374234809",
-        appId: "1:738374234809:web:6824602f58dc20b6a0e168",
-        measurementId: "G-B2Q08B0MMV",
-        databaseURL: "https://dom-lela-franc-default-rtdb.firebaseio.com/"
-    };
+  apiKey: "AIzaSyCU88D_CfthHl5V3y_tb4zTD5LDuQgtpdo",
+  authDomain: "dom-lela-franc.firebaseapp.com",
+  databaseURL: "https://dom-lela-franc-default-rtdb.firebaseio.com",
+  projectId: "dom-lela-franc",
+  storageBucket: "dom-lela-franc.firebasestorage.app",
+  messagingSenderId: "738374234809",
+  appId: "1:738374234809:web:6824602f58dc20b6a0e168",
+  measurementId: "G-B2Q08B0MMV"
+};
+    
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);

@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEM 6000 - DOM LELA I FRANC</title>
+    <title>PRIRUČNIK ZA NEGAVATELJE - OPERATIVNI SISTEM</title>
     <style>
         :root { --primary-blue: #1a4b8c; --emergency-red: #d9534f; --bg-light: #f8f9fa; --text-dark: #2c3e50; --success-green: #27ae60; }
         body { background: var(--bg-light); color: var(--text-dark); font-family: sans-serif; margin: 0; padding: 0; }
-        
-        .header { background: var(--primary-blue); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .header h1 { margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
-        .header p { margin: 5px 0 0; font-size: 0.8rem; opacity: 0.9; }
-
+        .header { background: var(--primary-blue); color: white; padding: 20px; text-align: center; }
         .container { max-width: 500px; margin: auto; padding: 15px; }
-
-        /* INSTRUKCIJA - OVO JE SADA PRIORITET */
-        #therapy-alert { background: #e8f4fd; border-left: 5px solid var(--success-green); padding: 15px; margin-bottom: 15px; display: none; font-size: 1rem; line-height: 1.4; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
+        /* POLJE ZA ODGOVOR KOJE MORA DA SE VIDI */
+        #instrukcija-ekran { 
+            background: #e8f4fd; 
+            border-left: 5px solid var(--success-green); 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            display: none; /* Inicijalno skriveno */
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
         #log-entries { height: 220px; overflow-y: auto; background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 10px; font-size: 0.85rem; margin-bottom: 15px; }
         .entry { padding: 8px; border-bottom: 1px solid #eee; }
         .critical { color: var(--emergency-red); font-weight: bold; background: #fff5f5; }
-
         .input-group { display: flex; flex-direction: column; gap: 10px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        input { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; outline: none; }
-        input:focus { border-color: var(--primary-blue); }
-
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
         .btn-log { background: var(--primary-blue); color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-emergency { background: var(--emergency-red); color: white; border: none; padding: 18px; border-radius: 4px; font-weight: bold; text-decoration: none; text-align: center; display: block; margin-top: 10px; font-size: 1.1rem; }
     </style>
@@ -32,84 +33,87 @@
 <body>
 
     <div class="header">
-        <h1>PRIRUČNIK ZA NEGAVATELJE</h1>
-        <p>DOM LELA I FRANC - OPERATIVNI SISTEM</p>
+        <h1 style="margin:0; font-size:1.1rem;">PRIRUČNIK ZA NEGAVATELJE</h1>
+        <p style="margin:5px 0 0; font-size:0.8rem;">DOM LELA I FRANC - 019/547-124</p>
     </div>
 
     <div class="container">
-        <div id="therapy-alert"></div>
+        <div id="instrukcija-ekran"></div>
 
-        <div id="log-entries">
-            </div>
+        <div id="log-entries"></div>
 
         <div class="input-group">
-            <input type="text" id="nurse-name" value="Igor Stajković" placeholder="Ime negovatelja...">
-            <input type="text" id="patient-data" placeholder="Unesite simptom ili pritisak (npr. 150/90)...">
-            <button class="btn-log" onclick="procesiraj()">EVIDENTIRAJ I ANALIZIRAJ</button>
-            <a href="tel:019547124" class="btn-emergency" onclick="logHitna()">🚑 POZOVI HITNU: 019 547 124</a>
+            <input type="text" id="nurse-name" value="Igor Stajković">
+            <input type="text" id="patient-data" placeholder="Unesite simptom (mučnina, pritisak)...">
+            <button class="btn-log" onclick="izvršiAnalizu()">EVIDENTIRAJ I PROVERI TERAPIJU</button>
+            <a href="tel:019547124" class="btn-emergency" onclick="evidentirajHitnu()">🚑 POZOVI HITNU: 019 547 124</a>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('domLelaFrancDB')) || [];
+        let baza = JSON.parse(localStorage.getItem('domLelaFrancDB')) || [];
 
-        // TVOJA MASTER MEDICINSKA LOGIKA
-        const bazuSimptoma = {
-            "muč": "INSTRUKCIJA: Administrirati **Klometol**. Pratiti smirivanje simptoma.",
-            "dija": "INSTRUKCIJA: Administrirati **2x Klometol + 1 caps Probiotik**. Povećati unos tečnosti.",
-            "prol": "INSTRUKCIJA: Administrirati **2x Klometol + 1 caps Probiotik**. Povećati unos tečnosti.",
-            "prit": "INSTRUKCIJA: Ako je pritisak > 140, administrirati **Nifelat**. Mirovanje i kontrola.",
-            "bol": "HITNO: Moguć infarkt. Odmah obavestiti lekara i ne pomerati korisnika!",
-            "guš": "HITNO: Obezbediti vazduh. Proveriti disajne puteve."
-        };
-
-        function updateDisplay() {
+        function osvežiEkran() {
             const list = document.getElementById('log-entries');
-            list.innerHTML = db.slice().reverse().map(e => `
+            list.innerHTML = baza.slice().reverse().map(e => `
                 <div class="entry ${e.isCritical ? 'critical' : ''}">
                     <strong>[${e.time}] ${e.staff}</strong><br>${e.content}
                 </div>
             `).join('');
         }
 
-        function procesiraj() {
+        function izvršiAnalizu() {
             const staff = document.getElementById('nurse-name').value;
             const input = document.getElementById('patient-data').value.trim();
-            const alertBox = document.getElementById('therapy-alert');
+            const ekran = document.getElementById('instrukcija-ekran');
             
             if (!input) return;
 
             let odgovor = "Zabeleženo u dnevnik rada.";
-            let isCritical = false;
-            const lowerInput = input.toLowerCase();
+            let hitno = false;
+            const text = input.toLowerCase();
 
-            // 1. Logika za pritisak (brojevi)
-            const pritisak = input.match(/\d+/);
-            if (pritisak && parseInt(pritisak[0]) >= 140) {
-                odgovor = "ALARM: Pritisak " + input + " je VISOK. Administrirati **Nifelat**. Mirovanje!";
-                isCritical = true;
-            } 
-            // 2. Logika za simptome
-            else {
-                for (let koren in bazuSimptoma) {
-                    if (lowerInput.includes(koren)) {
-                        odgovor = bazuSimptoma[koren];
-                        isCritical = true;
-                        break;
-                    }
+            // MEDICINSKA LOGIKA - TVOJE INSTRUKCIJE
+            if (text.includes("muč") || text.includes("povr")) {
+                odgovor = "INSTRUKCIJA: Administrirati KLOMETOL. Pratiti stanje.";
+                hitno = true;
+            } else if (text.includes("dija") || text.includes("prol")) {
+                odgovor = "INSTRUKCIJA: Administrirati 2x KLOMETOL + 1 caps PROBIOTIK.";
+                hitno = true;
+            } else if (text.includes("prit")) {
+                const br = input.match(/\d+/);
+                if (br && parseInt(br[0]) >= 140) {
+                    odgovor = "ALARM: Pritisak je VISOK. Administrirati NIFELAT. Mirovanje!";
+                    hitno = true;
+                } else {
+                    odgovor = "INSTRUKCIJA: Pritisak je u granicama normale. Nastaviti monitoring.";
                 }
             }
 
-            // Prikaz instrukcije na vrhu
-            alertBox.style.display = "block";
-            alertBox.innerHTML = `<strong>SISTEM ANALIZA:</strong><br>${odgovor}`;
+            // PRIKAZ ODGOVORA NA VRHU - OVO JE KLJUČNO
+            ekran.style.display = "block";
+            ekran.innerHTML = odgovor;
 
-            // Upis u memoriju
-            db.push({ 
+            // UPIS U MEMORIJU
+            baza.push({ 
                 time: new Date().toLocaleTimeString(), 
                 staff: staff, 
                 content: input.toUpperCase() + " -> " + odgovor, 
-                isCritical: isCritical 
+                isCritical: hitno 
             });
-            localStorage.setItem('domLela
-                                 
+            localStorage.setItem('domLelaFrancDB', JSON.stringify(baza));
+            
+            document.getElementById('patient-data').value = '';
+            osvežiEkran();
+        }
+
+        function evidentirajHitnu() {
+            baza.push({ time: new Date().toLocaleTimeString(), staff: document.getElementById('nurse-name').value, content: "!!! HITNA POMOĆ POZVANA !!!", isCritical: true });
+            localStorage.setItem('domLelaFrancDB', JSON.stringify(baza));
+            osvežiEkran();
+        }
+
+        osvežiEkran();
+    </script>
+</body>
+</html>

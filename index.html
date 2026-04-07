@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PRIRUČNIK ZA NEGAVATELJE - DOM LELA I FRANC</title>
+    <style>
+        :root { --primary-blue: #1a4b8c; --emergency-red: #d9534f; --bg-light: #f8f9fa; --text-dark: #2c3e50; }
+        body { background: var(--bg-light); color: var(--text-dark); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        
+        /* Profesionalno Zaglavlje */
+        .header { background: var(--primary-blue); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .header h1 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
+        .header p { margin: 5px 0 0; font-size: 0.8rem; opacity: 0.9; }
+
+        .container { max-width: 500px; margin: auto; padding: 15px; }
+
+        /* Statusna Tabla */
+        .status-card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--primary-blue); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .status-card h3 { margin: 0 0 10px; font-size: 0.9rem; color: var(--primary-blue); text-transform: uppercase; }
+
+        /* Baza Podataka - Lista Unosa */
+        #log-entries { height: 300px; overflow-y: auto; background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 10px; font-size: 0.85rem; margin-bottom: 15px; }
+        .entry { padding: 8px; border-bottom: 1px solid #eee; margin-bottom: 5px; animation: fadeIn 0.3s; }
+        .entry-time { font-weight: bold; color: #7f8c8d; font-size: 0.75rem; }
+        .entry-data { display: block; margin-top: 3px; }
+        .critical { color: var(--emergency-red); font-weight: bold; background: #fff5f5; }
+
+        /* Kontrole za Personal */
+        .input-group { display: flex; flex-direction: column; gap: 10px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        .btn-log { background: var(--primary-blue); color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-emergency { background: var(--emergency-red); color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>PRIRUČNIK ZA NEGAVATELJE</h1>
+        <p>DOM LELA I FRANC - OPERATIVNI SISTEM</p>
+    </div>
+
+    <div class="container">
+        <div class="status-card">
+            <h3>Monitoring Vitalnih Funkcija</h3>
+            <div id="log-entries">
+                </div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="nurse-name" placeholder="Ime negovatelja..." required>
+            <input type="text" id="patient-data" placeholder="Pritisak, lek ili zapažanje..." required>
+            <button class="btn-log" onclick="addToDatabase()">EVIDENTIRAJ PROMENU</button>
+            <button class="btn-emergency" onclick="triggerEmergency()">HITNA INTERVENCIJA</button>
+        </div>
+    </div>
+
+    <script>
+        // Inicijalizacija baze podataka iz lokalne memorije
+        let db = JSON.parse(localStorage.getItem('domLelaFrancDB')) || [];
+
+        function updateDisplay() {
+            const container = document.getElementById('log-entries');
+            container.innerHTML = '';
+            db.slice().reverse().forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'entry' + (entry.isCritical ? ' critical' : '');
+                div.innerHTML = `
+                    <span class="entry-time">[${entry.time}] - Osoblje: ${entry.staff}</span>
+                    <span class="entry-data">${entry.content}</span>
+                `;
+                container.appendChild(div);
+            });
+            container.scrollTop = 0;
+        }
+
+        function addToDatabase() {
+            const staff = document.getElementById('nurse-name').value.trim();
+            const content = document.getElementById('patient-data').value.trim();
+            if (!staff || !content) { alert('Sva polja moraju biti popunjena.'); return; }
+
+            const now = new Date();
+            const timeStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            
+            // Detekcija kritičnih parametara (Pritisak iznad 140)
+            const isCritical = content.match(/\d+/) && parseInt(content.match(/\d+/)[0]) >= 140;
+
+            const newEntry = { time: timeStr, staff: staff, content: content, isCritical: isCritical };
+            db.push(newEntry);
+            localStorage.setItem('domLelaFrancDB', JSON.stringify(db));
+            
+            document.getElementById('patient-data').value = '';
+            updateDisplay();
+        }
+
+        function triggerEmergency() {
+            const staff = document.getElementById('nurse-name').value.trim() || "NEPOZNATO";
+            const now = new Date();
+            const entry = {
+                time: now.toLocaleDateString() + ' ' + now.toLocaleTimeString(),
+                staff: staff,
+                content: "!!! HITNA POMOĆ AKTIVIRANA !!!",
+                isCritical: true
+            };
+            db.push(entry);
+            localStorage.setItem('domLelaFrancDB', JSON.stringify(db));
+            updateDisplay();
+            alert('Protokol hitne pomoći aktiviran i zabeležen u bazi.');
+        }
+
+        // Prvo učitavanje
+        updateDisplay();
+    </script>
+</body>
+</html>

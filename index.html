@@ -1,125 +1,95 @@
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PRIRUČNIK 6000 - DOM LELA I FRANC</title>
-    <style>
-        :root { --primary-blue: #1a4b8c; --emergency-red: #d9534f; --bg-light: #f8f9fa; --text-dark: #2c3e50; --success-green: #27ae60; }
-        body { background: var(--bg-light); color: var(--text-dark); font-family: sans-serif; margin: 0; padding: 0; }
-        .header { background: var(--primary-blue); color: white; padding: 15px; text-align: center; }
-        .container { max-width: 500px; margin: auto; padding: 10px; }
-        
-        #therapy-alert { background: #fff; border-left: 8px solid var(--success-green); padding: 15px; margin-bottom: 10px; display: none; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-weight: bold; }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        #log-area { height: 300px; overflow-y: auto; background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 10px; font-size: 0.85rem; margin-bottom: 10px; }
-        .entry { padding: 8px; border-bottom: 1px solid #eee; }
-        .is-crit { border-left: 4px solid var(--emergency-red); background: #fff5f5; }
+  // Tvoja konfiguracija koju si upravo dobio
+  const firebaseConfig = {
+    apiKey: "AIzaSyCU88D_CfthHl5V3y_tb4zTD5LDuQgtpdo",
+    authDomain: "dom-lela-franc.firebaseapp.com",
+    projectId: "dom-lela-franc",
+    storageBucket: "dom-lela-franc.firebasestorage.app",
+    messagingSenderId: "738374234809",
+    appId: "1:738374234809:web:6824602f58dc20b6a0e168",
+    measurementId: "G-B2Q08B0MMV"
+  };
 
-        .input-group { display: flex; flex-direction: column; gap: 10px; background: white; padding: 15px; border-radius: 8px; }
-        select, input { padding: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
-        .btn { padding: 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: white; text-transform: uppercase; }
-        .btn-blue { background: var(--primary-blue); }
-        .btn-red { background: var(--emergency-red); text-align: center; text-decoration: none; display: block; }
-    </style>
-</head>
-<body>
+  // Inicijalizacija
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const logsRef = ref(db, 'dnevnik');
 
-    <div class="header">
-        <h2 style="margin:0;">PRIRUČNIK ZA NEGAVATELJE</h2>
-        <p style="margin:5px 0 0; font-size:0.8rem;">DOM LELA I FRANC - 019/547-124</p>
-    </div>
+  const protokoli = {
+    "muč": "KLOMETOL",
+    "dija": "2x KLOMETOL + 1 caps PROBIOTIK",
+    "prit": "NIFELAT (ako je > 140)",
+    "bol": "HITNO: Pozvati lekara!"
+  };
 
-    <div class="container">
-        <div id="therapy-alert"></div>
-        <div id="log-area"></div>
+  // ČITANJE PODATAKA IZ BAZE (Real-time)
+  onValue(logsRef, (snapshot) => {
+    const data = snapshot.val();
+    const logArea = document.getElementById('log-area');
+    logArea.innerHTML = "";
+    
+    if (data) {
+      Object.values(data).reverse().forEach(log => {
+        const div = document.createElement('div');
+        div.className = `entry ${log.hitno ? 'is-crit' : ''}`;
+        div.innerHTML = `<strong>[${log.vreme}] ${log.ko}</strong><br>${log.tekst}`;
+        logArea.appendChild(div);
+      });
+    }
+  });
 
-        <div class="input-group">
-            <select id="nurse-name">
-                <option value="" disabled selected>Izaberite negovatalja...</option>
-                <option value="Igor Stajković">Igor Stajković</option>
-                <option value="Negovatelj 2">Negovatelj 2</option>
-                <option value="Negovatelj 3">Negovatelj 3</option>
-            </select>
-            
-            <input type="text" id="patient-input" placeholder="Simptom ili pritisak...">
-            
-            <button class="btn btn-blue" onclick="izvršiProtokol()">EVIDENTIRAJ PROMENU</button>
-            <a href="tel:019547124" class="btn btn-red" onclick="registrujHitnu()">🚑 HITNA POMOĆ</a>
-        </div>
-    </div>
+  // SLANJE PODATAKA U BAZU
+  window.izvršiProtokol = function() {
+    const ko = document.getElementById('nurse-name').value;
+    const unos = document.getElementById('patient-input').value.trim();
+    const alertBox = document.getElementById('therapy-alert');
 
-    <script>
-        // Simulacija baze dok ne povežemo Firebase
-        let lokalnaBaza = JSON.parse(localStorage.getItem('domLogs')) || [];
+    if (!ko) { alert("Prvo izaberite svoje ime!"); return; }
+    if (!unos) return;
 
-        const protokoli = {
-            "muč": "KLOMETOL",
-            "dija": "2x KLOMETOL + 1 caps PROBIOTIK",
-            "prit": "NIFELAT (ako je > 140)",
-            "bol": "HITNO: Pozvati lekara!"
-        };
+    let instrukcija = "Zabeleženo u dnevnik rada.";
+    let hitno = false;
 
-        function prikažiDnevnik() {
-            document.getElementById('log-area').innerHTML = lokalnaBaza.slice().reverse().map(log => `
-                <div class="entry ${log.hitno ? 'is-crit' : ''}">
-                    <strong>[${log.vreme}] ${log.ko}</strong><br>${log.tekst}
-                </div>
-            `).join('');
+    // Analiza unosa (Pritisak i simptomi)
+    const proveraPritisk = unos.match(/\d+/);
+    if (proveraPritisk && parseInt(proveraPritisk[0]) >= 140) {
+      instrukcija = "ALARM: Pritisak je VISOK. Administrirati NIFELAT. Mirovanje!";
+      hitno = true;
+    } else {
+      for (let k in protokoli) {
+        if (unos.toLowerCase().includes(k)) {
+          instrukcija = "INSTRUКCIJA: " + protokoli[k];
+          hitno = true;
+          break;
         }
+      }
+    }
 
-        function izvršiProtokol() {
-            const ko = document.getElementById('nurse-name').value;
-            const unos = document.getElementById('patient-input').value.trim();
-            const alertBox = document.getElementById('therapy-alert');
+    alertBox.style.display = "block";
+    alertBox.innerHTML = instrukcija;
 
-            if (!ko) { alert("Prvo izaberite svoje ime!"); return; }
-            if (!unos) return;
+    // Slanje u Firebase
+    push(logsRef, {
+      vreme: new Date().toLocaleString('sr-RS'),
+      ko: ko,
+      tekst: unos.toUpperCase() + " -> " + instrukcija,
+      hitno: hitno
+    });
 
-            let instrukcija = "Zapisano.";
-            let hitno = false;
+    document.getElementById('patient-input').value = '';
+  };
 
-            // Logika analize
-            const proveraPritisk = unos.match(/\d+/);
-            if (proveraPritisk && parseInt(proveraPritisk[0]) >= 140) {
-                instrukcija = "ALARM: Pritisak " + unos + " -> Administrirati **NIFELAT**.";
-                hitno = true;
-            } else {
-                for (let k in protokoli) {
-                    if (unos.toLowerCase().includes(k)) {
-                        instrukcija = "INSTRUKCIJA: " + protokoli[k];
-                        hitno = true;
-                        break;
-                    }
-                }
-            }
-
-            alertBox.style.display = "block";
-            alertBox.innerHTML = instrukcija;
-
-            // Spremanje objekta za budući Firebase
-            const noviLog = {
-                vreme: new Date().toLocaleTimeString(),
-                ko: ko,
-                tekst: unos.toUpperCase() + " -> " + instrukcija,
-                hitno: hitno
-            };
-
-            lokalnaBaza.push(noviLog);
-            localStorage.setItem('domLogs', JSON.stringify(lokalnaBaza));
-            
-            document.getElementById('patient-input').value = '';
-            prikažiDnevnik();
-        }
-
-        function registrujHitnu() {
-            const ko = document.getElementById('nurse-name').value || "NEPOZNATO";
-            lokalnaBaza.push({ vreme: new Date().toLocaleTimeString(), ko: ko, tekst: "!!! POZIV HITNOJ SLUŽBI !!!", hitno: true });
-            localStorage.setItem('domLogs', JSON.stringify(lokalnaBaza));
-            prikažiDnevnik();
-        }
-
-        prikažiDnevnik();
-    </script>
-</body>
-</html>
+  window.registrujHitnu = function() {
+    const ko = document.getElementById('nurse-name').value || "NEPOZNATO";
+    push(logsRef, {
+      vreme: new Date().toLocaleString('sr-RS'),
+      ko: ko,
+      tekst: "!!! POZIV HITNOJ SLUŽBI !!!",
+      hitno: true
+    });
+  };
+      </script>
+      

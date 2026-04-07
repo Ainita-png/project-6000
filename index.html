@@ -1,1 +1,138 @@
-<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{background:#000;color:#ccc;font-family:monospace;padding:15px;margin:0}.h{border-left:4px solid #f00;padding-left:10px;margin-bottom:15px}.p{background:#f00;color:#fff;display:block;text-align:center;padding:15px;font-weight:bold;text-decoration:none;border:2px solid #fff;border-radius:8px;margin-bottom:15px}input{width:100%;padding:15px;background:#111;border:1px solid #444;color:#0f0;box-sizing:border-box}.c{background:#080808;border:1px solid #222;padding:12px;margin-top:10px;border-left:4px solid #f00}.t{color:#f00;font-size:0.7rem;font-weight:bold;text-transform:uppercase}.d{display:none;margin-top:10px;color:#bbb;font-size:0.9rem;border-top:1px solid #333;padding-top:10px}.s{background:rgba(255,0,0,0.1);padding:8px;margin-top:10px;color:#ff9d9d;border-right:3px solid #f00}</style></head><body onload="r()"><div class="h"><small style="color:#0f0">● ARCHITECT 6000 // ONLINE</small><h2>AiNiTA BUNKER</h2><small>"Zapamti ovo, zaboravi sve..."</small></div><a href="tel:019547124" class="p">🚨 HITNA POMOĆ: 019 547 124</a><input type="text" id="i" placeholder="FILTRIRAJ BAZU..." oninput="r()"><div id="res"></div><script>const K=[{n:"PRITISAK - Protokol 180+",c:"HITNO",o:"Uspravi pacijenta, apsolutna tišina, lek pod jezik.",s:"Mirna ruka Arhitekto! Prati stanje do dolaska Hitne."},{n:"ŠLOG - Brzi GROM test",c:"HITNO",o:"G-Govor, R-Ruke, O-Osmeh, M-Minuti.",s:"Ako je bilo šta od ovoga iskrivljeno, odmah Hitna!"},{n:"Madopar - Parkinson",c:"LEK",o:"Stroga satnica. Bez proteina (mleko, meso) uz lek.",s:"Pauza u kretanju nastaje ako se zakasni 15 min."},{n:"Aspiracija - Krkljanje",c:"OPREMA",o:"Izvlačenje šlajma aparatom. Max 10 sekundi.",s:"Ako pacijent teško diše i čuje se šlajm, odmah čišćenje!"},{n:"Dekubiti - Nega rane",c:"NEGA",o:"Okretanje na 2h. Koža mora biti suva i čista.",s:"Cink krema na crvenilo, Vioplex mrežica na otvoreno."},{n:"Klometol - Protiv mučnine",c:"LEK",o:"Dati 30 min pre ostalih lekova ili jela.",s:"Ovaj lek čuva sve ostale da ne budu izbačeni."},{n:"Oksimetar - Kiseonik",c:"APARAT",o:"Merenje zasićenosti krvi kiseonikom.",s:"Sve ispod 90% zahteva proveru kiseonika/lekara!"},{n:"Šećer - Hipoglikemija",c:"STANJE",o:"Nagla drhtavica, znojenje, zbunjenost.",s:"Odmah šećer i voda ili med. Brza reakcija spasava svest."}];function r(){const q=document.getElementById('i').value.toLowerCase();const v=document.getElementById('res');v.innerHTML="";K.filter(m=>m.n.toLowerCase().includes(q)||m.c.toLowerCase().includes(q)||q==="").forEach(m=>{v.innerHTML+=`<div class="c" onclick="let d=this.querySelector('.d');d.style.display=d.style.display==='block'?'none':'block'"><span class="t">${m.c}</span><h3>${m.n}</h3><div class="d"><b>OPIS:</b> ${m.o}<div class="s"><b>SAVET:</b> ${m.s}</div></div></div>`;});}</script></body></html>
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priručnik za negovatelje - Dom Lela i Franc</title>
+    <style>
+        :root {
+            --primary-blue: #1a4a7c;
+            --secondary-blue: #eef4f9;
+            --accent-red: #d9534f;
+            --text-dark: #333;
+            --border-color: #ccd6dd;
+        }
+        body {
+            background-color: #f4f7f6;
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .manual-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.8em;
+        }
+        header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        h2 {
+            color: var(--primary-blue);
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+        }
+        h2::before {
+            content: "✚";
+            margin-right: 10px;
+            color: var(--accent-red);
+        }
+        .protocol-box {
+            background-color: var(--secondary-blue);
+            border-left: 5px solid var(--primary-blue);
+            padding: 15px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        footer {
+            background: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            border-top: 1px solid var(--border-color);
+        }
+        .version {
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="manual-container">
+        <header>
+            <h1>Priručnik za negovatelje</h1>
+            <p>DOM LELA I FRANC</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2>Osnovni protokoli nege</h2>
+                <p>Standardi operativnog rada u domu podrazumevaju nultu toleranciju na propuste u higijeni i administraciji lekova.</p>
+                <div class="protocol-box">
+                    Svaka promena u stanju korisnika mora biti zabeležena odmah, bez odlaganja.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Dnevna rutina i monitoring</h2>
+                <ul>
+                    <li>Kontrola vitalnih funkcija (tri puta dnevno).</li>
+                    <li>Nadzor nad ishranom i hidratacijom.</li>
+                    <li>Vođenje dnevnika rada negovatelja.</li>
+                    <li>Održavanje neposrednog okruženja korisnika.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Etika i komunikacija</h2>
+                <p>Profesionalni pristup zahteva jasnu distancu uz maksimalnu posvećenost dobrobiti starih lica. Svaka nervoza ostaje van prostorija doma.</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Interni dokument — Dom Lela i Franc</p>
+            <p>Verzija: <span class="version">šest hiljada</span> milja ispred standarda</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -62,7 +62,8 @@
             Object.values(data).reverse().forEach(log => {
                 const div = document.createElement('div');
                 div.className = log.hitno ? 'log-entry alert' : 'log-entry';
-                div.innerHTML = `<strong>[${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
+                div.innerHTML = `<strong>[${log.datum || ''} ${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
+                
                 logArea.appendChild(div);
             });
         } else {
@@ -113,15 +114,14 @@
         alertBox.style.display = "block";
         alertBox.style.borderColor = hitno ? "#e53935" : "#ff9800";
 
-        logsRef.push({
+                logsRef.push({
+            datum: new Date().toLocaleDateString('sr-RS'),
             vreme: new Date().toLocaleTimeString('sr-RS'),
             ko: ko.toUpperCase(),
             tekst: unosRaw.toUpperCase() + " -> " + instrukcija,
             hitno: hitno
         });
-
-        document.getElementById('patient-input').value = "";
-    };
+        
 
     // 4. Hitna pomoć
     window.registrujHitnu = function() {

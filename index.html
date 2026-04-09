@@ -54,7 +54,7 @@
     const logsRef = db.ref('dnevnik');
 
     // 2. Čitanje dnevnika u realnom vremenu
-    logsRef.limitToLast(20).on('value', (snapshot) => {
+        logsRef.limitToLast(20).on('value', (snapshot) => {
         const logArea = document.getElementById('log-area');
         logArea.innerHTML = "";
         const data = snapshot.val();
@@ -62,14 +62,15 @@
             Object.values(data).reverse().forEach(log => {
                 const div = document.createElement('div');
                 div.className = log.hitno ? 'log-entry alert' : 'log-entry';
+                // Ovde spajamo datum i vreme u jedan pečat:
                 div.innerHTML = `<strong>[${log.datum || ''} ${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
-                
                 logArea.appendChild(div);
             });
         } else {
             logArea.innerHTML = "Dnevnik je prazan.";
         }
     });
+    
 
     // 3. Glavna AI Funkcija
     window.izvršiProtokol = function() {

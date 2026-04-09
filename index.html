@@ -91,36 +91,56 @@ window.izvršiProtokol = function() {
     const alertBox = document.getElementById('the-alert');
 
     if (!ko || ko.trim().length < 2) { 
-        alert("SISTEM: IDENTIFIKACIJA OBAVEZNA! UPIŠITE IME."); 
+        alert("SISTEM: UPIŠI SVOJE IME!"); 
         return; 
     }
     if (!unos) return;
 
+    // Baza znanja direktno u funkciji (nema više greške sa 'protokoli')
     const odgovori = {
         'bol': 'GDE TAČNO BOLI? Grudi/stomak -> LEKAR! Glava/zglob -> ANALGETIK.',
-        'muč': 'KLOMETOL (1 TAB). Prati stanje 30 min.',
-        'povr': 'STOP HRANI. Tečnost na kašičicu. KLOMETOL. Pozovi lekara!',
+        'muč': 'KLOMETOL (1 TAB). Prati stanje.',
+        'povr': 'STOP HRANI. Tečnost na kašičicu. KLOMETOL. Zovi lekara!',
         'temp': 'Ako je > 38.5 -> BRUFEN/PARACETAMOL. Ispod samo tečnost.',
         'šeć': 'IZMERI ŠEĆER! Ako je < 4 -> šećer/voda. Ako je > 15 -> LEKAR.',
         'prit': 'IZMERI PRITISAK! Gornji preko 170 -> HITNA INTERVENCIJA!'
     };
 
-    let finalniOdgovor = "ZABELEŽENO. Prati stanje pacijenta.";
-    let jeHitno = false;
+    let instrukcija = "Zabeleženo u dnevnik. Prati stanje pacijenta.";
+    let hitno = false;
 
+    // Provera pritiska (matematika)
     const pMatch = unos.match(/(\d+)\/(\d+)/);
     if (pMatch && parseInt(pMatch[1]) > 170) {
-        finalniOdgovor = "!!! ALARM: KRITIČAN PRITISAK! POZOVI LEKARA !!!";
-        jeHitno = true;
+        instrukcija = "!!! ALARM: KRITIČAN PRITISAK! POZOVI LEKARA !!!";
+        hitno = true;
     } else {
-        for (let ključ in odgovori) {
-            if (unos.includes(ključ)) {
-                finalniOdgovor = "INSTRUKCIJA: " + odgovori[ključ];
-                jeHitno = true;
+        // Provera ključnih reči
+        for (let k in odgovori) {
+            if (unos.includes(k)) {
+                instrukcija = "INSTRUKCIJA: " + odgovori[k];
+                hitno = true;
                 break;
             }
         }
     }
+
+    // Prikaz u onom plavom/crvenom polju
+    alertBox.innerHTML = instrukcija;
+    alertBox.className = hitno ? "alert-box hitno" : "alert-box";
+    alertBox.style.display = "block";
+
+    // Zapis u Firebase
+    logsRef.push({
+        vreme: new Date().toLocaleTimeString('sr-RS'),
+        ko: ko.toUpperCase(),
+        tekst: unosRaw.toUpperCase() + " -> " + instrukcija,
+        hitno: hitno
+    });
+
+    document.getElementById('patient-input').value = "";
+};
+    
 
     alertBox.innerHTML = finalniOdgovor;
     alertBox.className = jeHitno ? "alert-box hitno" : "alert-box";

@@ -31,11 +31,8 @@
 
     <div id="the-alert"></div>
 
-    <select id="nurse-name">
-        <option value="">Izaberite ime negovatelja</option>
-        <option value="Igor">Igor</option>
-        <option value="Supruga">Supruga</option>
-    </select>
+    <input type="text" id="nurse-name" placeholder="UPIŠI SVOJE IME..." style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:2px solid #444; background:#1a1a1a; color:#00ff00; font-weight:bold; outline:none;">
+    
 
     <input type="text" id="patient-input" placeholder="Simptom (mučnina, pritisak, bol)...">
 
@@ -87,40 +84,58 @@
     });
 
     // 5. Glavna funkcija
-    window.izvršiProtokol = function() {
-        const ko = document.getElementById('nurse-name').value;
-        const unos = document.getElementById('patient-input').value;
-        const alertBox = document.getElementById('the-alert');
+window.izvršiProtokol = function() {
+    const ko = document.getElementById('nurse-name').value;
+    const unosRaw = document.getElementById('patient-input').value;
+    const unos = unosRaw.toLowerCase();
+    const alertBox = document.getElementById('the-alert');
 
-        if (!ko) { alert("Izaberi svoje ime!"); return; }
-        if (!unos) return;
+    if (!ko || ko.trim().length < 2) { 
+        alert("SISTEM: IDENTIFIKACIJA OBAVEZNA! UPIŠITE IME."); 
+        return; 
+    }
+    if (!unos) return;
 
-        let instrukcija = "Zabeleženo u dnevnik rada.";
-        let hitno = false;
+    const odgovori = {
+        'bol': 'GDE TAČNO BOLI? Grudi/stomak -> LEKAR! Glava/zglob -> ANALGETIK.',
+        'muč': 'KLOMETOL (1 TAB). Prati stanje 30 min.',
+        'povr': 'STOP HRANI. Tečnost na kašičicu. KLOMETOL. Pozovi lekara!',
+        'temp': 'Ako je > 38.5 -> BRUFEN/PARACETAMOL. Ispod samo tečnost.',
+        'šeć': 'IZMERI ŠEĆER! Ako je < 4 -> šećer/voda. Ako je > 15 -> LEKAR.',
+        'prit': 'IZMERI PRITISAK! Gornji preko 170 -> HITNA INTERVENCIJA!'
+    };
 
-        // Provera visokog pritiska
-        const pritisakMatch = unos.match(/(\d+)\/(\d+)/);
-        if (pritisakMatch && parseInt(pritisakMatch[1]) > 170) {
-            instrukcija = "ALARM: Pritisak je VISOK! Odmor i provera za 15 min.";
-            hitno = true;
-        } else {
-            for (let k in protokoli) {
-                if (unos.toLowerCase().includes(k)) {
-                    instrukcija = "INSTRUKCIJA: " + protokoli[k];
-                    hitno = true;
-                }
+    let finalniOdgovor = "ZABELEŽENO. Prati stanje pacijenta.";
+    let jeHitno = false;
+
+    const pMatch = unos.match(/(\d+)\/(\d+)/);
+    if (pMatch && parseInt(pMatch[1]) > 170) {
+        finalniOdgovor = "!!! ALARM: KRITIČAN PRITISAK! POZOVI LEKARA !!!";
+        jeHitno = true;
+    } else {
+        for (let ključ in odgovori) {
+            if (unos.includes(ključ)) {
+                finalniOdgovor = "INSTRUKCIJA: " + odgovori[ključ];
+                jeHitno = true;
+                break;
             }
         }
+    }
 
-        alertBox.style.display = "block";
-        alertBox.innerHTML = instrukcija;
+    alertBox.innerHTML = finalniOdgovor;
+    alertBox.className = jeHitno ? "alert-box hitno" : "alert-box";
+    alertBox.style.display = "block";
 
-        logsRef.push({
-            vreme: new Date().toLocaleTimeString('sr-RS'),
-            ko: ko,
-            tekst: unos.toUpperCase() + " -> " + instrukcija,
-            hitno: hitno
-        });
+    logsRef.push({
+        vreme: new Date().toLocaleTimeString('sr-RS'),
+        ko: ko.toUpperCase(),
+        tekst: `[UNOS: ${unosRaw.toUpperCase()}] -> [AI: ${finalniOdgovor}]`,
+        hitno: jeHitno
+    });
+
+    document.getElementById('patient-input').value = "";
+};
+    
 
         document.getElementById('patient-input').value = "";
     };

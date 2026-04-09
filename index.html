@@ -10,8 +10,8 @@
         body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
         .header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
         .container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        #log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.9em; background: #fff; }
-        .log-entry { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
+        #log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.9em; background: #fff; text-align: left; }
+        .log-entry { padding: 8px; border-bottom: 1px solid #eee; }
         .log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
         input, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
         .btn-main { background: #1a4a8e; color: white; font-weight: bold; cursor: pointer; border: none; }
@@ -38,7 +38,7 @@
 </div>
 
 <script>
-    // 1. Firebase Konfiguracija (Arhitekta Original)
+    // 1. Firebase Konfiguracija (Tvoji provereni ključevi)
     const firebaseConfig = {
         apiKey: "AIzaSyCjty2cRQl6VRwal06EVX9VwEwxwhKbqkM",
         authDomain: "dom-lela-franc.firebaseapp.com",
@@ -53,8 +53,8 @@
     const db = firebase.database();
     const logsRef = db.ref('dnevnik');
 
-    // 2. Čitanje dnevnika u realnom vremenu
-        logsRef.limitToLast(20).on('value', (snapshot) => {
+    // 2. Čitanje dnevnika (Ovo je popravljeno da ne koči)
+    logsRef.limitToLast(20).on('value', (snapshot) => {
         const logArea = document.getElementById('log-area');
         logArea.innerHTML = "";
         const data = snapshot.val();
@@ -62,17 +62,17 @@
             Object.values(data).reverse().forEach(log => {
                 const div = document.createElement('div');
                 div.className = log.hitno ? 'log-entry alert' : 'log-entry';
-                // Ovde spajamo datum i vreme u jedan pečat:
-                div.innerHTML = `<strong>[${log.datum || ''} ${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
+                // Prikazuje datum ako postoji, ako ne samo vreme
+                const datumPrikaz = log.datum ? log.datum + " " : "";
+                div.innerHTML = `<strong>[${datumPrikaz}${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
                 logArea.appendChild(div);
             });
         } else {
             logArea.innerHTML = "Dnevnik je prazan.";
         }
     });
-    
 
-    // 3. Glavna AI Funkcija
+    // 3. Glavna Funkcija
     window.izvršiProtokol = function() {
         const ko = document.getElementById('nurse-name').value;
         const unosRaw = document.getElementById('patient-input').value;
@@ -80,7 +80,7 @@
         const alertBox = document.getElementById('the-alert');
 
         if (!ko || ko.trim().length < 2) { 
-            alert("GREŠKA: Identifikacija obavezna!"); 
+            alert("SISTEM: UPIŠI SVOJE IME!"); 
             return; 
         }
         if (!unos) return;
@@ -113,16 +113,18 @@
 
         alertBox.innerHTML = instrukcija;
         alertBox.style.display = "block";
-        alertBox.style.borderColor = hitno ? "#e53935" : "#ff9800";
 
-                logsRef.push({
+        // Upis sa DATUMOM
+        logsRef.push({
             datum: new Date().toLocaleDateString('sr-RS'),
             vreme: new Date().toLocaleTimeString('sr-RS'),
             ko: ko.toUpperCase(),
             tekst: unosRaw.toUpperCase() + " -> " + instrukcija,
             hitno: hitno
         });
-        
+
+        document.getElementById('patient-input').value = "";
+    };
 
     // 4. Hitna pomoć
     window.registrujHitnu = function() {

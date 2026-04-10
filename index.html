@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIRUČNIK ZA NEGOVATELJE</title>
+    <title>AiNiTA BUNKER - VIBER PRO</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
         .header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
         .container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        #log-area { height: 350px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.9em; background: #fff; text-align: left; }
-        .log-entry { padding: 8px; border-bottom: 1px solid #eee; }
+        #log-area { height: 350px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
+        .log-entry { padding: 8px; border-bottom: 1px solid #eee; line-height: 1.4; }
         .log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
         input, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        .btn-main { background: #1a4a8e; color: white; font-weight: bold; cursor: pointer; border: none; }
-        .btn-emergency { background: #e53935; color: white; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
-        #the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; font-weight: bold; text-align: center; color: #333; }
+        .btn-main { background: #1a4a8e; color: white; font-weight: bold; border: none; }
+        .btn-viber { background: #7360f2; color: white; font-weight: bold; border: none; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-emergency { background: #e53935; color: white; font-weight: bold; border: none; margin-top: 10px; }
+        .btn-clear { background: #333; color: white; font-size: 12px; opacity: 0.5; border: none; margin-top: 40px; }
+        #the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h2>AiNiTA BUNKER - PROTOKOLI</h2>
+    <h2>AiNiTA BUNKER - VIBER</h2>
     <p>DOM LELA I FRANC - NEGOTIN</p>
 </div>
 
@@ -31,10 +33,13 @@
     <div id="the-alert"></div>
 
     <input type="text" id="nurse-name" placeholder="TVOJE IME (OBAVEZNO)...">
-    <input type="text" id="patient-input" placeholder="Opiši stanje (npr. visok pritisak, agresivan, dijareja...)">
+    <input type="text" id="patient-input" placeholder="Opiši stanje ili lek...">
 
     <button class="btn-main" onclick="izvršiProtokol()">ZABELEŽI PROMENU</button>
+    <button class="btn-viber" onclick="viberProtokol()">🟣 POŠALJI NA VIBER</button>
     <button class="btn-emergency" onclick="registrujHitnu()">🚑 HITNA POMOĆ</button>
+    
+    <button class="btn-clear" onclick="obrišiSve()">OBRIŠI KOMPLETAN DNEVNIK</button>
 </div>
 
 <script>
@@ -51,13 +56,16 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const logsRef = db.ref('dnevnik');
+    let trenutniLogovi = [];
 
-    logsRef.limitToLast(20).on('value', (snapshot) => {
+    logsRef.limitToLast(30).on('value', (snapshot) => {
         const logArea = document.getElementById('log-area');
         logArea.innerHTML = "";
         const data = snapshot.val();
+        trenutniLogovi = [];
         if (data) {
             Object.values(data).reverse().forEach(log => {
+                trenutniLogovi.push(log);
                 const div = document.createElement('div');
                 div.className = log.hitno ? 'log-entry alert' : 'log-entry';
                 const datumPrikaz = log.datum ? log.datum + " " : "";
@@ -75,56 +83,27 @@
         const unos = unosRaw.toLowerCase();
         const alertBox = document.getElementById('the-alert');
 
-        if (!ko || ko.trim().length < 2) { 
-            alert("SISTEM: MORAŠ SE POTPISATI!"); 
-            return; 
-        }
+        if (!ko || ko.trim().length < 2) { alert("SISTEM: POTPIŠI SE!"); return; }
         if (!unos) return;
 
         const odgovori = {
-            // PRITISAK I HITNO
-            'prit': 'IZMERI PRITISAK! Ako je gornji >170 -> NIFELAT (pod jezik) ili KATIOPIL. Zovi lekara!',
-            'bol': 'GDE TAČNO BOLI? Grudi/stomak -> LEKAR! Glava/zglob -> ANALGIN ili IBUPROFEN.',
-            'šeć': 'IZMERI ŠEĆER! Ako je <4 -> šećer i voda. Ako je >15 -> POZOVI LEKARA.',
-            
-            // STOMAK I LEKOVI
-            'muč': 'KLOMETOL (1 tableta). Prati stanje pola sata.',
-            'povr': 'STOP HRANI. Tečnost na kašičicu. KLOMETOL. Pozovi lekara!',
-            'dija': 'LOPERAMID (1-2 kapsule). Dijetalna ishrana (pirinač, dvopek).',
-            'želud': 'OMEPROL (1 ujutru na prazan stomak).',
-            
-            // TEMPERATURA I STANJA
-            'temp': 'Ako je >38.5 -> IBUPROFEN ili ANALGIN. Ispod toga samo čaj i voda.',
-            'drht': 'Izmeri temperaturu i šećer! Utopli korisnika. Ako ne prolazi -> LEKAR.',
-            
-            // PSIHIJATRIJA I PONAŠANJE
-            'agres': 'SMIRI TON. Skloni opasne predmete. Ne protivreči. Pozovi pomoć.',
-            'šizo': 'PROVERI TERAPIJU! Ako halucinira ili odbija lekove -> HITNO LEKAR.',
-            'deme': 'Strpljenje. Kratke rečenice. Ne menjaj mu rutinu i prostor.',
-            'ponaš': 'Proveri da li je mokar, gladan ili ga nešto boli. Budi miran.',
-
-            // NEPOKRETNI KORISNICI
-            'dekub': 'CRVENILO? Okretanje na svaka 2 sata! Cinkova mast. Antidekubitalni dušek.',
-            'guše': 'ASPIRACIJA? Odmah podigni uzglavlje (sedeći položaj)! Pozovi lekara!',
-            'opsti': 'Nema stolicu >3 dana? Čaj za probavu ili glicerinski čepić.',
-            'rana': 'Čišćenje, previjanje. Javi lekaru ako se oseća miris ili ima gnoja.'
+            'prit': 'IZMERI PRITISAK! >170 -> NIFELAT (pod jezik) ili KATIOPIL. Zovi lekara!',
+            'bol': 'GDE TAČNO BOLI? Grudi/stomak -> LEKAR! Ostalo -> ANALGIN ili IBUPROFEN.',
+            'šeć': 'PROVERI ŠEĆER! Ako je <4 -> šećer/voda. Ako je >15 -> LEKAR.',
+            'muč': 'KLOMETOL (1 tableta).',
+            'dija': 'Loperamid (1-2 kapsule). Dijetalna ishrana.',
+            'želud': 'Omeprol (1 ujutru na prazan stomak).',
+            'temp': 'Ako je >38.5 -> IBUPROFEN/ANALGIN. Ispod samo voda.',
+            'dekub': 'Okretanje na 2 sata! Cinkova mast.',
+            'guše': 'ASPIRACIJA? Podigni uzglavlje odmah!',
+            'opsti': 'Čaj za probavu ili glicerinski čepić.'
         };
 
-        let instrukcija = "Zabeleženo u dnevnik. Prati stanje korisnika.";
+        let instrukcija = "Zabeleženo.";
         let hitno = false;
 
-        const pMatch = unos.match(/(\d+)\/(\d+)/);
-        if (pMatch && parseInt(pMatch[1]) > 170) {
-            instrukcija = "!!! ALARM: KRITIČAN PRITISAK! DAJ NIFELAT I ZOVI LEKARA !!!";
-            hitno = true;
-        } else {
-            for (let k in odgovori) {
-                if (unos.includes(k)) {
-                    instrukcija = "INSTRUKCIJA: " + odgovori[k];
-                    hitno = true;
-                    break;
-                }
-            }
+        for (let k in odgovori) {
+            if (unos.includes(k)) { instrukcija = odgovori[k]; hitno = true; break; }
         }
 
         alertBox.innerHTML = instrukcija;
@@ -137,8 +116,33 @@
             tekst: unosRaw.toUpperCase() + " -> " + instrukcija,
             hitno: hitno
         });
-
         document.getElementById('patient-input').value = "";
+    };
+
+    // NOVA VIBER FUNKCIJA - AUTOMATIZACIJA
+    window.viberProtokol = function() {
+        if (trenutniLogovi.length === 0) { alert("Dnevnik je prazan!"); return; }
+        
+        let tekstIzveštaja = "📋 IZVEŠTAJ IZ SMENE - BUNKER\n\n";
+        trenutniLogovi.slice().reverse().forEach(log => {
+            tekstIzveštaja += `[${log.vreme}] ${log.ko}: ${log.tekst}\n`;
+        });
+
+        // Kopiraj u klipbord
+        navigator.clipboard.writeText(tekstIzveštaja).then(() => {
+            // Otvori Viber direktno
+            window.location.href = "viber://forward?text=" + encodeURIComponent(tekstIzveštaja);
+        }).catch(err => {
+            // Rezervna opcija ako clipboard zakaže
+            window.location.href = "viber://forward?text=" + encodeURIComponent(tekstIzveštaja);
+        });
+    };
+
+    window.obrišiSve = function() {
+        if (confirm("ARHITEKTO, BRIŠEMO SVE?")) {
+            logsRef.set(null);
+            alert("Baza očišćena.");
+        }
     };
 
     window.registrujHitnu = function() {
@@ -147,12 +151,11 @@
             datum: new Date().toLocaleDateString('sr-RS'),
             vreme: new Date().toLocaleTimeString('sr-RS'),
             ko: ko.toUpperCase(),
-            tekst: "!!! POKRENUT POZIV HITNOJ SLUŽBI !!!",
+            tekst: "!!! HITAN POZIV !!!",
             hitno: true
         });
         window.location.href = "tel:019547124";
     };
 </script>
-
 </body>
 </html>

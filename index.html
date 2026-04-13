@@ -39,4 +39,72 @@ label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; displ
 <div class="dev-notice">DEV MOD: Firebase isključen. Testiranje sa lekovima iz fioke.</div>
 <div class="header">
 <h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
-<p>DOM LELA
+<p>DOM LELA I FRANC - NEGOTIN</p>
+</div>
+
+<div class="container">
+  <div class="tab-nav">
+    <button id="tabDnevnikBtn" class="active">DNEVNIK</button>
+    <button id="tabBazaBtn">BAZA ZNANJA</button>
+  </div>
+
+  <!-- TAB 1: DNEVNIK -->
+  <div id="tabDnevnik" class="tab active">
+    <div id="log-area">DEV MOD: Ovde će ići dnevnik rada...</div>
+    <div id="the-alert"></div>
+    <input type="text" id="nurse-name" placeholder="TVOJE IME (OBAVEZNO)...">
+    <input type="text" id="patient-input" placeholder="Opiši simptom: mučnina, pritisak 180...">
+    <button class="btn-main" onclick="izvršiProtokol()">ZABELEŽI I DAJ UPUTSTVO</button>
+    <button class="btn-viber" onclick="viberProtokol()">🟣 POŠALJI NA VIBER</button>
+    <button class="btn-emergency" onclick="registrujHitnu()">🚑 HITNA POMOĆ</button>
+    <button class="btn-clear" onclick="obrišiSve()">OBRIŠI KOMPLETAN DNEVNIK</button>
+  </div>
+
+  <!-- TAB 2: BAZA ZNANJA -->
+  <div id="tabBaza" class="tab">
+    <input type="text" id="pretragaSimptoma" placeholder="Traži simptom u bazi...">
+    <div id="lista-simptoma"></div>
+    <hr>
+    <h4>Dodaj/Izmeni simptom u bazi</h4>
+    <label>NAZIV SIMPTOMA</label>
+    <input type="text" id="noviSimptomNaziv" placeholder="npr. Mučnina">
+    <label>PRVA POMOĆ - Šta može odmah</label>
+    <textarea id="noviSimptomPrvaPomoc" placeholder="1. Popij 1 tabletu Klometola 10mg. 2. Sedi uspravno 30 min."></textarea>
+    <label>UPOZORENJE - Kad ne sme i šta ako ne pomogne</label>
+    <textarea id="noviSimptomUpozorenje" placeholder="NE UZIMAJ ako si alergičan. Ako ne prestane za 1h, ZOVI SESTRU."></textarea>
+    <div class="checkbox-wrap">
+      <input type="checkbox" id="noviSimptomHitno">
+      <label for="noviSimptomHitno" style="margin:0;">Označi kao HITNO stanje</label>
+    </div>
+    <button class="btn-main" onclick="dodajSimptom()">SAČUVAJ U BAZU</button>
+  </div>
+
+</div>
+
+<script>
+// ===== FIREBASE KONFIG - OTKOMENTARIŠI KAD AKTIVIRAŠ FIREBASE =====
+/*
+const firebaseConfig = {
+  apiKey: "UBACI_SVOJ_API_KEY",
+  authDomain: "dom-lela-franc.firebaseapp.com",
+  databaseURL: "https://dom-lela-franc-default-rtdb.firebaseio.com",
+  projectId: "dom-lela-franc",
+  storageBucket: "dom-lela-franc.firebasestorage.app",
+  messagingSenderId: "738374234809",
+  appId: "1:738374234809:web:6824602f58dc20b6a0e168"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const logsRef = db.ref('dnevnik');
+const simptomiRef = db.ref('simptomi');
+*/
+
+// ===== DEV MOD: BAZA SA LEKOVIMA IZ FIOKE =====
+let devLogovi = [];
+let devSimptomi = [
+  {naziv: "Dijareja", prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe. Bez mleka i masnog.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici. Maksimalno 8 kapsula u 24h. Ako ne prestane za 24h ili se pojavi krv/temperatura, ODMAH ZOVI SESTRU. Rizik od dehidratacije.", hitno: false},
+  {naziv: "Mučnina", prvaPomoc: "1. Popij 1 tabletu Klometola od 10mg sa malo vode. 2. Sedi uspravno 30 minuta. Ne lezi odmah.", upozorenje: "NE UZIMAJ ako si alergičan na Klometol ili imaš epilepsiju. Ako ne prestane za 1h, počneš da povraćaš, ili se javi bol u stomaku, ODMAH ZOVI SESTRU. Ne uzimaj drugu tabletu na 6h bez lekara.", hitno: false},
+  {naziv: "Opstipacija", prvaPomoc: "1. Popij 2 čaše mlake vode odmah. 2. Ako nema stolice 3 dana: opcija A) Stavi 1 glicerinski čepić. opcija B) Skuvaj čaj od sene, popij 1 šolju. 3. Sačekaj 30-120 min.", upozorenje: "NE UZIMAJ ako imaš jake bolove u stomaku, krvarenje ili sumnju na uklještenje. Ako nema efekta za 4h ili se jave bolovi, ZOVI SESTRU. Ne koristiti duže od 7 dana bez lekara.", hitno: false},
+  {naziv: "Pritisak", prvaPomoc: "1. Izmeri pritisak APARATOM posle 5 min sedenja. 2. Ako je 160-180/100-110: stavi 1 tabletu Katopila 25mg pod jezik. 3. Ako je 180-200/110-120: stavi 1 tbl Nifelata 10mg pod jezik. 4. Lezi 30 min pa meri opet APARATOM.", upozorenje: "AKO IZMERIŠ >200/120 ILI IMAŠ BOL U GRUDIMA, GLAVOBOLJU, MUČNINU → NE UZIMAJ NIŠTA. TO JE HITNO. PRITISNI HITNA POMOĆ. Ne mešaj Katopil i Nifelat. Maks 1 doza bez lekara.", hitno: false},
+  {naziv: "Pritisak hitno", prvaPomoc: "ODMAH PRESTANI SA SVIM AKTIVNOSTIMA. Sedi ili lezi sa uzdignutom glavom.", upozorenje: "PRITISAK >200/120 JE HITNO STANJE. NE UZIMAJ LEKOVE NA SVOJU RUKU. ODMAH PRITISNI DUGME HITNA POMOĆ ILI ZOVI 194.", hitno: true},
+  {naziv: "Bol u grudima", prvaPomoc: "ODMAH PRESTANI SA

@@ -1,283 +1,101 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIGITALNI IZVEŠTAJ - VIBER PRO v2</title>
-<style>
-body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-.header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
-.container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-#log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
-.log-entry { padding: 8px; border-bottom: 1px solid #eee; line-height: 1.4; }
-.log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
-input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-.btn-main { background: #1a4a8e; color: white; font-weight: bold; border: none; }
-.btn-viber { background: #7360f2; color: white; font-weight: bold; border: none; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.btn-emergency { background: #e53935; color: white; font-weight: bold; border: none; margin-top: 10px; }
-.btn-clear { background: #333; color: white; font-size: 12px; opacity: 0.5; border: none; margin-top: 40px; }
-#the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; text-align: left; line-height: 1.5; }
-#the-alert b { color: #e65100; }
-.tab-nav { display: flex; margin-bottom: 15px; }
-.tab-nav button { width: 50%; margin: 0; border-radius: 0; background: #ddd; color: #333; border: none; }
-.tab-nav button.active { background: #1a4a8e; color: white; }
-.tab { display: none; }
-.tab.active { display: block; }
-.kartica { border: 1px solid #ddd; padding: 10px; margin: 8px 0; border-radius: 8px; background: #fafafa; }
-.kartica b { color: #1a4a8e; }
-label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
-.checkbox-wrap { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
-.checkbox-wrap input { width: auto; }
-.dev-notice { background: #ffeb3b; padding: 10px; text-align: center; font-weight: bold; }
-</style>
-    </style>
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIGITALNI IZVEŠTAJ - VIBER PRO v2</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+    .header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
+    .container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    #log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
+    .log-entry { padding: 8px; border-bottom: 1px solid #eee; line-height: 1.4; }
+    .log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
+    input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+    .btn-main { background: #1a4a8e; color: white; font-weight: bold; border: none; }
+    .btn-viber { background: #7360f2; color: white; font-weight: bold; border: none; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-emergency { background: #e53935; color: white; font-weight: bold; border: none; margin-top: 10px; }
+    .btn-clear { background: #333; color: white; font-size: 12px; opacity: 0.5; border: none; margin-top: 40px; }
+    #the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; text-align: left; line-height: 1.5; }
+    #the-alert b { color: #e65100; }
+    .tab-nav { display: flex; margin-bottom: 15px; }
+    .tab-nav button { width: 50%; margin: 0; border-radius: 0; background: #ddd; color: #333; border: none; }
+    .tab-nav button.active { background: #1a4a8e; color: white; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .kartica { border: 1px solid #ddd; padding: 10px; margin: 8px 0; border-radius: 8px; background: #fafafa; }
+    .kartica b { color: #1a4a8e; }
+    label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
+    .checkbox-wrap { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+    .checkbox-wrap input { width: auto; }
+    .footer { font-size:10px; color:#888; text-align:center; margin-top:30px; padding:15px 5px; border-top:1px solid #eee; line-height:1.4; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<div class="dev-notice">DEV MOD: v2 - Svi bagovi ispravljeni</div>
-<div class="header">
-<h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
-<p>DOM LELA I FRANC - NEGOTIN</p>
-</div>
-
-<div class="container">
-  <div class="tab-nav">
-    <button id="tabDnevnikBtn" class="active">DNEVNIK</button>
-    <button id="tabBazaBtn">BAZA ZNANJA</button>
+  <div class="header">
+    <h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
+    <p>DOM LELA I FRANC - NEGOTIN</p>
   </div>
-
-  <div id="tabDnevnik" class="tab active">
-    <div id="log-area">DEV MOD: Ovde će ići dnevnik rada...</div>
-    <div id="the-alert"></div>
-    <input type="text" id="nurse-name" placeholder="TVOJE IME (OBAVEZNO)...">
-    <input type="text" id="patient-input" placeholder="Opiši simptom: mučnina, pritisak 180...">
-    <button class="btn-main" id="btnZabelezi">ZABELEŽI I DAJ UPUTSTVO</button>
-    <button class="btn-viber" id="btnViber">🟣 POŠALJI NA VIBER</button>
-    <button class="btn-emergency" id="btnHitna">🚑 HITNA POMOĆ</button>
-    <button class="btn-clear" id="btnObrisi">OBRIŠI KOMPLETAN DNEVNIK</button>
-  </div>
-
-  <div id="tabBaza" class="tab">
-    <input type="text" id="pretragaSimptoma" placeholder="Traži simptom u bazi...">
-    <div id="lista-simptoma"></div>
-    <hr>
-    <h4>Dodaj/Izmeni simptom u bazi</h4>
-    <label>NAZIV SIMPTOMA</label>
-    <input type="text" id="noviSimptomNaziv" placeholder="npr. Mučnina">
-    <label>PRVA POMOĆ - Šta može odmah</label>
-    <textarea id="noviSimptomPrvaPomoc" placeholder="1. Popij 1 tabletu Klometola 10mg. 2. Sedi uspravno 30 min."></textarea>
-    <label>UPOZORENJE - Kad ne sme i šta ako ne pomogne</label>
-    <textarea id="noviSimptomUpozorenje" placeholder="NE UZIMAJ ako si alergičan. Ako ne prestane za 1h, ZOVI SESTRU."></textarea>
-    <div class="checkbox-wrap">
-      <input type="checkbox" id="noviSimptomHitno">
-      <label for="noviSimptomHitno" style="margin:0;">Označi kao HITNO stanje</label>
+  <div class="container">
+    <div class="tab-nav">
+      <button id="tabDnevnikBtn" class="active">DNEVNIK</button>
+      <button id="tabBazaBtn">BAZA ZNANJA</button>
     </div>
-    <button class="btn-main" id="btnSacuvaj">SAČUVAJ U BAZU</button>
+    <div id="tabDnevnik" class="tab active">
+      <div id="log-area">Dnevnik je prazan.</div>
+      <div id="the-alert"></div>
+      <input type="text" id="nurse-name" placeholder="TVOJE IME (OBAVEZNO)...">
+      <input type="text" id="patient-input" placeholder="Opiši simptom: mučnina, pritisak 180...">
+      <button class="btn-main" id="btnZabelezi">ZABELEŽI I DAJ UPUTSTVO</button>
+      <button class="btn-viber" id="btnViber">🟣 POŠALJI NA VIBER</button>
+      <button class="btn-emergency" id="btnHitna">🚑 HITNA POMOĆ</button>
+      <button class="btn-clear" id="btnObrisi">OBRIŠI KOMPLETAN DNEVNIK</button>
+      <div class="footer">
+        <b>UPOZORENJE:</b> Ovaj sistem je deo medicinske dokumentacije.<br>
+        Neovlašćen pristup ili izmena podataka podleže krivičnoj odgovornosti<br>
+        po čl. 302 Krivičnog zakonika RS. Svaki pristup se evidentira.<br><br>
+        DOM LELA I FRANC - NEGOTIN © 2026
+      </div>
+    </div>
+    <div id="tabBaza" class="tab">
+      <input type="text" id="pretragaSimptoma" placeholder="Traži simptom u bazi...">
+      <div id="lista-simptoma"></div>
+      <hr>
+      <h4>Dodaj/Izmeni simptom u bazi</h4>
+      <label>NAZIV SIMPTOMA</label>
+      <input type="text" id="noviSimptomNaziv" placeholder="npr. Mučnina">
+      <label>PRVA POMOĆ - Šta može odmah</label>
+      <textarea id="noviSimptomPrvaPomoc" placeholder="1. Popij 1 tabletu Klometola 10mg. 2. Sedi uspravno 30 min."></textarea>
+      <label>UPOZORENJE - Kad ne sme i šta ako ne pomogne</label>
+      <textarea id="noviSimptomUpozorenje" placeholder="NE UZIMAJ ako si alergičan. Ako ne prestane za 1h, ZOVI SESTRU."></textarea>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="noviSimptomHitno">
+        <label for="noviSimptomHitno" style="margin:0;">Označi kao HITNO stanje</label>
+      </div>
+      <button class="btn-main" id="btnSacuvaj">SAČUVAJ U BAZU</button>
+    </div>
   </div>
-
-</div>
-
-<script>
-try {
-  // ===== DEV MOD: BAZA SA LEKOVIMA IZ FIOKE =====
-  let devLogovi = [];
-  let devSimptomi = [
-    {naziv: "Dijareja", prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe. Bez mleka i masnog.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici. Maksimalno 8 kapsula u 24h. Ako ne prestane za 24h ili se pojavi krv/temperatura, ODMAH ZOVI SESTRU. Rizik od dehidratacije.", hitno: false},
-    {naziv: "Mučnina", prvaPomoc: "1. Popij 1 tabletu Klometola od 10mg sa malo vode. 2. Sedi uspravno 30 minuta. Ne lezi odmah.", upozorenje: "NE UZIMAJ ako si alergičan na Klometol ili imaš epilepsiju. Ako ne prestane za 1h, počneš da povraćaš, ili se javi bol u stomaku, ODMAH ZOVI SESTRU. Ne uzimaj drugu tabletu na 6h bez lekara.", hitno: false},
-    {naziv: "Opstipacija", prvaPomoc: "1. Popij 2 čaše mlake vode odmah. 2. Ako nema stolice 3 dana: opcija A) Stavi 1 glicerinski čepić. opcija B) Skuvaj čaj od sene, popij 1 šolju. 3. Sačekaj 30-120 min.", upozorenje: "NE UZIMAJ ako imaš jake bolove u stomaku, krvarenje ili sumnju na uklještenje. Ako nema efekta za 4h ili se jave bolovi, ZOVI SESTRU. Ne koristiti duže od 7 dana bez lekara.", hitno: false},
-    {naziv: "Pritisak", prvaPomoc: "1. Izmeri pritisak APARATOM posle 5 min sedenja. 2. Ako je 160-180/100-110: stavi 1 tabletu Katopila 25mg pod jezik. 3. Ako je 180-200/110-120: stavi 1 tbl Nifelata 10mg pod jezik. 4. Lezi 30 min pa meri opet APARATOM.", upozorenje: "AKO IZMERIŠ >200/120 ILI IMAŠ BOL U GRUDIMA, GLAVOBOLJU, MUČNINU → NE UZIMAJ NIŠTA. TO JE HITNO. PRITISNI HITNA POMOĆ. Ne mešaj Katopil i Nifelat. Maks 1 doza bez lekara.", hitno: false},
-    {naziv: "Pritisak hitno", prvaPomoc: "ODMAH PRESTANI SA SVIM AKTIVNOSTIMA. Sedi ili lezi sa uzdignutom glavom.", upozorenje: "PRITISAK >200/120 JE HITNO STANJE. NE UZIMAJ LEKOVE NA SVOJU RUKU. ODMAH PRITISNI DUGME HITNA POMOĆ ILI ZOVI 194.", hitno: true},
-    {naziv: "Bol u grudima", prvaPomoc: "ODMAH PRESTANI SA SVIM AKTIVNOSTIMA. Sedi ili lezi. Ne uzimaj vodu ni lekove.", upozorenje: "BOL U GRUDIMA JE HITNO STANJE. Mogući infarkt. NE ČEKAJ. NE PITAJ. ODMAH PRITISNI DUGME HITNA POMOĆ ILI ZOVI 194. Svaki minut je važan.", hitno: true},
-    {naziv: "Dekubiti", prvaPomoc: "1. Ne leži na toj strani tela naredna 2 sata. 2. Mesto pažljivo operi mlakom vodom i blagim sapunom, posuši tapkanjem. 3. Naprskaj Vioplex sprej na ranu sa 20cm razdaljine. Ako je koža samo crvena bez rane, namaži tanko Sudokrem.", upozorenje: "Ovo je samo prva pomoć da ne pogoršaš. OBAVEZNO prijavi sestri na viziti da pregleda stadijum i napravi plan okretanja. Ako rana smrdi, crna je, curi gnoj ili se širi, ZOVI SESTRU ODMAH. Ne mešaj Vioplex i Sudokrem na otvorenu ranu.", hitno: false},
-    {naziv: "Dezorijentacija", prvaPomoc: "1. Ostani gde jesi. Ne izlazi iz sobe. 2. Glasno reci sebi: 'Ja sam [IME], nalazim se u Domu Lela i Franc. Ja sam bezbedan.' 3. Nađi 3 poznate stvari u sobi i imenuj ih. 4. Duboko diši.", upozorenje: "NE POSTOJI LEK za ovo na tvoju ruku. Ovo je psihološki protokol da se smiriš dok ne dođe pomoć. Ako se osećaš uplašeno, agresivno ili hoćeš napolje, ODMAH PRITISNI DUGME HITNA POMOĆ ili viči sestru. Nisi sam.", hitno: true},
-    {naziv: "Crvenilo na koži", prvaPomoc: "1. Ne češi. Operi mesto mlakom vodom bez sapuna. 2. Posuši tapkanjem i namaži TANKO Sudokrem na crvenilo. 3. Ne pokrivaj flasterom.", upozorenje: "Ako se crvenilo širi i pored Sudokrema, stvara plikove, jako svrbi, ili dobiješ otežano disanje, ZOVI SESTRU ODMAH. Može biti alergija. Ako je od ležanja, prijavi sestri da promeni položaj.", hitno: false},
-    {naziv: "Crvenilo očiju", prvaPomoc: "1. Ne trljaj oči. 2. Isperi oči čistom, mlakom vodom. 3. Stavi hladnu, vlažnu oblogu preko zatvorenih kapaka na 5 minuta.", upozorenje: "NEMAMO KAPI ZA OČI NA STANJU. Ne stavljaj ništa drugo u oko. Ako ima bol u oku, gubitak vida, jake suze, gnoj ili je povreda oka, ZOVI SESTRU ODMAH. Ne čekaj.", hitno: false},
-    {naziv: "Temperatura", prvaPomoc: "1. Izmeri toplomerom. 2. Ako je >38.5°C: Popij 1 tbl Paracetamola 500mg. Ako je >39°C: možeš 1 tbl Brufena 400mg umesto Paracetamola, SAMO ako si jeo. 3. Raskomoti se, pij vodu.", upozorenje: "NE MEŠAJ Paracetamol i Brufen. Razmak 6h. Brufen ne na prazan stomak, ne ako imaš čir/astmu. Paracetamol ne ako imaš bolesnu jetru. AKO JE >39.5°C + drhtavica/povraćanje → HITNO. PRITISNI HITNA POMOĆ.", hitno: false},
-    {naziv: "Bolovi", prvaPomoc: "1. Za blag bol: 1 tbl Paracetamol 500mg. 2. Za jači bol mišići/zglobovi: 1 tbl Brufen 400mg posle jela. 3. Za grčeve/jak bol: 1 tbl Analgin 500mg. 4. Mirovanje.", upozorenje: "NE MEŠAJ ova 3 leka. Biraj jedan. Brufen ne na prazan stomak. Analgin ne ako imaš probleme sa krvnom slikom. Ako bol ne prođe za 1h, pojačava se, ili je bol u grudima/stomaku/glavi, ZOVI SESTRU ODMAH.", hitno: false},
-    {naziv: "Otoci na nogama", prvaPomoc: "1. Podigni noge na jastuk iznad nivoa srca. 2. Ako imaš propisan Lasix od lekara: popij 1 tbl Lasix 40mg ujutru. 3. Smanji so u hrani.", upozorenje: "LASIX SE NE UZIMA NA SVOJU RUKU. Samo ako ti je lekar već propisao. Može da obori pritisak i kalijum. Ako se javi vrtoglavica, grčevi, suva usta, ZOVI SESTRU. Ako otoci naglo porastu + gušenje → HITNO.", hitno: false}
-  ];
-
-  // --- TAB LOGIKA ---
-  const tabDnevnik = document.getElementById('tabDnevnik');
-  const tabBaza = document.getElementById('tabBaza');
-  document.getElementById('tabDnevnikBtn').onclick = () => {
-    tabDnevnik.classList.add('active'); tabBaza.classList.remove('active');
-    document.getElementById('tabDnevnikBtn').classList.add('active');
-    document.getElementById('tabBazaBtn').classList.remove('active');
-  };
-  document.getElementById('tabBazaBtn').onclick = () => {
-    tabBaza.classList.add('active'); tabDnevnik.classList.remove('active');
-    document.getElementById('tabBazaBtn').classList.add('active');
-    document.getElementById('tabDnevnikBtn').classList.remove('active');
-    ucitajSimptome();
-  };
-
-  // --- DNEVNIK LOGIKA ---
-  function renderLogovi() {
-    const logArea = document.getElementById('log-area');
-    logArea.innerHTML = "";
-    if (devLogovi.length === 0) {
-      logArea.innerHTML = "Dnevnik je prazan. DEV MOD aktivan.";
-      return;
-    }
-    devLogovi.slice().reverse().forEach(log => {
-      const div = document.createElement('div');
-      div.className = log.hitno? 'log-entry alert' : 'log-entry';
-      div.innerHTML = `<strong>[${log.vreme}] ${log.ko}:</strong> ${log.tekst}`;
-      logArea.appendChild(div);
-    });
-  }
-  renderLogovi();
-
-  function izvršiProtokol() {
-    const ko = document.getElementById('nurse-name').value;
-    const unosRaw = document.getElementById('patient-input').value;
-    const unos = unosRaw.toLowerCase().trim();
-    const alertBox = document.getElementById('the-alert');
-
-    if (!ko || ko.trim().length < 2) { alert("SISTEM: POTPIŠI SE!"); return; }
-    if (!unos) return;
-
-    let instrukcija = "Zabeleženo. Ako stanje nije hitno, sačekaj sestru.";
-    let hitno = false;
-    let naslovUputstva = "UPUTSTVO";
-    let jeHitnoStanje = false;
-    let pogodak = null;
-
-    const match = unos.match(/\d+\.?\d*/);
-    const broj = match? parseFloat(match[0].replace(',','.')) : null;
-
-    if (unos.includes('pritisak') && broj!== null) {
-      if (broj > 200) pogodak = devSimptomi.find(s => s.naziv === 'Pritisak hitno');
-      else if (broj >= 160) pogodak = devSimptomi.find(s => s.naziv === 'Pritisak');
-    }
-    if (unos.includes('temperatura') && broj!== null) {
-      if (broj > 39.5) {
-        pogodak = {naziv: "Temperatura hitno", prvaPomoc: "NE UZIMAJ NIŠTA. Lezi i pokrij se.", upozorenje: "TEMPERATURA >39.5°C JE HITNO. ODMAH PRITISNI DUGME HITNA POMOĆ.", hitno: true};
-      } else if (broj >= 38.5) {
-        pogodak = devSimptomi.find(s => s.naziv === 'Temperatura');
-      }
-    }
-
-    if (!pogodak) {
-      for (let simptom of devSimptomi) {
-        if (unos.includes(simptom.naziv.toLowerCase())) {
-          pogodak = simptom;
-          break;
-        }
-      }
-    }
-
-    if (pogodak) {
-      if (pogodak.hitno === true) {
-        jeHitnoStanje = true;
-        naslovUputstva = `🚨 HITNO STANJE: ${pogodak.naziv.toUpperCase()} 🚨`;
-        instrukcija = `<b>${pogodak.prvaPomoc}</b><br><br><u>AKCIJA:</u> ${pogodak.upozorenje}`;
-        hitno = true;
-        alertBox.style.background = '#ffebee';
-        alertBox.style.border = '2px solid #c62828';
-      } else {
-        naslovUputstva = `PRVA POMOĆ ZA: ${pogodak.naziv.toUpperCase()}`;
-        instrukcija = `<b>${pogodak.prvaPomoc}</b><br><br><u>VAŽNO:</u> ${pogodak.upozorenje}`;
-        hitno = false;
-        alertBox.style.background = '#fff3e0';
-        alertBox.style.border = '2px solid #ff9800';
-      }
-    }
-
-    alertBox.innerHTML = `<b>${naslovUputstva}</b><br>${instrukcija}`;
-    alertBox.style.display = "block";
-
-    if (jeHitnoStanje) {
-      if (confirm("Ovo je označeno kao HITNO STANJE. Da li da odmah pozovem hitnu pomoć?")) {
-        registrujHitnu();
-      }
-    }
-
-    devLogovi.push({
-      vreme: new Date().toLocaleTimeString('sr-RS'),
-      ko: ko.toUpperCase(),
-      tekst: `${unosRaw.toUpperCase()} -> Prikazano uputstvo. HITNO: ${hitno}`,
-      hitno: hitno
-    });
-    renderLogovi();
-    document.getElementById('patient-input').value = "";
-  }
-
-  function viberProtokol() {
-    if (devLogovi.length === 0) { alert("Dnevnik je prazan!"); return; }
-    let tekstIzveštaja = "📋 IZVEŠTAJ IZ SMENE - BUNKER\n\n";
-    devLogovi.slice().reverse().forEach(log => { tekstIzveštaja += `[${log.vreme}] ${log.ko}: ${log.tekst}\n`; });
-    navigator.clipboard.writeText(tekstIzveštaja).then(() => {
-      window.location.href = "viber://forward?text=" + encodeURIComponent(tekstIzveštaja);
-    }).catch(err => { window.location.href = "viber://forward?text=" + encodeURIComponent(tekstIzveštaja); });
-  }
-
-  function obrišiSve() { if (confirm("ARHITEKTO, BRIŠEMO SVE?")) { devLogovi = []; renderLogovi(); alert("Baza očišćena."); } }
-
-  function registrujHitnu() {
-    const ko = document.getElementById('nurse-name').value || "NEPOZNATO";
-    devLogovi.push({ vreme: new Date().toLocaleTimeString('sr-RS'), ko: ko.toUpperCase(), tekst: "!!! HITAN POZIV!!!", hitno: true });
-    renderLogovi();
-    window.location.href = "tel:019547124";
-  }
-
-  // --- BAZA ZNANJA LOGIKA ---
-  function ucitajSimptome() {
-    const lista = document.getElementById('lista-simptoma');
-    lista.innerHTML = "";
-    if (devSimptomi.length === 0) {
-      lista.innerHTML = "Baza simptoma je prazna. Dodaj prvi.";
-      return;
-    }
-    devSimptomi.forEach(s => {
-      const hitnoTag = s.hitno? '🚨 HITNO' : '';
-      lista.innerHTML += `
-        <div class="kartica">
-          <b>${s.naziv.toUpperCase()}</b> ${hitnoTag}<br>
-          <small><b>PRVA POMOĆ:</b> ${s.prvaPomoc}</small><br>
-          <small><b>UPOZORENJE:</b> ${s.upozorenje}</small>
-        </div>`;
-    });
-  }
-  ucitajSimptome();
-
-  function dodajSimptom() {
-    const naziv = document.getElementById('noviSimptomNaziv').value.trim();
-    const prvaPomoc = document.getElementById('noviSimptomPrvaPomoc').value.trim();
-    const upozorenje = document.getElementById('noviSimptomUpozorenje').value.trim();
-    const hitno = document.getElementById('noviSimptomHitno').checked;
-    if (!naziv) return alert("Upiši naziv simptoma");
-    devSimptomi.push({ naziv, prvaPomoc, upozorenje, hitno });
-    document.getElementById('noviSimptomNaziv').value = "";
-    document.getElementById('noviSimptomPrvaPomoc').value = "";
-    document.getElementById('noviSimptomUpozorenje').value = "";
-    document.getElementById('noviSimptomHitno').checked = false;
-    ucitajSimptome();
-    alert("Simptom sačuvan u DEV bazu!");
-  }
-
-  // ISPRAVLJENO: razmak u selektoru
-  document.getElementById('pretragaSimptoma').onkeyup = (e) => {
-    const unos = e.target.value.toLowerCase();
-    document.querySelectorAll('#lista-simptoma.kartica').forEach(k => {
-      k.style.display = k.innerText.toLowerCase().includes(unos)? 'block' : 'none';
-    });
-  };
-
-  // Kačenje event listenera umesto inline onclick da izbegnemo bugove
-  document.getElementById('btnZabelezi').onclick = izvršiProtokol;
-  document.getElementById('btnViber').onclick = viberProtokol;
-  document.getElementById('btnHitna').onclick = registrujHitnu;
-  document.getElementById('btnObrisi').onclick = obrišiSve;
-  document.getElementById('btnSacuvaj').onclick = dodajSimptom;
-
-} catch (e) {
-  alert("GREŠKA U KODU: " + e.message + " | Linija: " + e.lineNumber);
-  console.error(e);
-}
-</script>
-</body>
-</html>
+  <script>
+    try {
+      var firebaseConfig = {
+        apiKey: "AIzaSyBa6hWwC1dula7p7Pf3eL9gmxsw1gYQq5M",
+        authDomain: "prva-pomoc-d4249.firebaseapp.com",
+        databaseURL: "https://prva-pomoc-d4249-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "prva-pomoc-d4249",
+        storageBucket: "prva-pomoc-d4249.firebasestorage.app",
+        messagingSenderId: "57642952982",
+        appId: "1:57642952982:web:0ff80900c5c35c5bff2519"
+      };
+      firebase.initializeApp(firebaseConfig);
+      var database = firebase.database();
+      var FIREBASE_AKTIVAN = true;
+      
+      let devLogovi = [];
+      let devSimptomi = [
+        {
+          naziv: "Dijareja", 
+          prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe.", 
+          upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici. Ako ne prestane za 1h, ZOVI SESTRU/HITNU POMOĆ."
+```

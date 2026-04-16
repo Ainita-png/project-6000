@@ -28,7 +28,7 @@
 </head>
 <body>
 
-  <div class="dev-notice">DEV MOD: v2 - Offline baza aktivna</div>
+  <div class="dev-notice">DEV MOD: v2 - Sveobuhvatni digitalni izveštaj</div>
 
   <div class="header">
     <h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
@@ -59,7 +59,7 @@
     </div>
 
     <div id="tabBaza" class="tab">
-      <p style="font-size: 12px; color: #666;">Ovde možete videti listu svih simptoma u sistemu.</p>
+      <p style="font-size: 12px; color: #666;">Lista simptoma i protokola:</p>
       <div id="lista-simptoma" style="max-height: 400px; overflow-y: auto; font-size: 13px;"></div>
     </div>
   </div>
@@ -71,23 +71,24 @@
       {naziv: "Mučnina", prvaPomoc: "1. Popij 1 tbl Klometola. 2. Sedi uspravno.", upozorenje: "Prijavi ako počne povraćanje.", hitno: false},
       {naziv: "Pritisak", prvaPomoc: "1. Katopil 25mg pod jezik (ako je 160-180). 2. Nifelat 10mg (ako je 180-200).", upozorenje: "Lezi 30 min nakon leka.", hitno: false},
       {naziv: "Pritisak hitno", prvaPomoc: "Prekini sve aktivnosti. Sedi ili lezi.", upozorenje: "PRITISAK PREKO 200 JE HITNO STANJE!", hitno: true},
+      {naziv: "Nizak pritisak", prvaPomoc: "1. Popij 2 čaše vode. 2. Lezi sa podignutim nogama.", upozorenje: "Ako se javi vrtoglavica, odmah zovi pomoć.", hitno: false},
       {naziv: "Bol u grudima", prvaPomoc: "Sedi ili lezi odmah. Ne uzimaj vodu.", upozorenje: "ODMAH ZOVI 194!", hitno: true},
       {naziv: "Temperatura", prvaPomoc: "Paracetamol 500mg (ako je >38.5).", upozorenje: "Ako je >39.5, zovi pomoć.", hitno: false}
     ];
 
-    // Navigacija
-    document.getElementById('tabDnevnikBtn').onclick = () => prebaciTab('tabDnevnik');
-    document.getElementById('tabBazaBtn').onclick = () => {
-      prebaciTab('tabBaza');
-      prikaziBazu();
-    };
-
+    // --- TAB NAVIGACIJA ---
     function prebaciTab(tabId) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       document.getElementById(tabId + 'Btn').classList.add('active');
     }
+
+    document.getElementById('tabDnevnikBtn').onclick = () => prebaciTab('tabDnevnik');
+    document.getElementById('tabBazaBtn').onclick = () => {
+      prebaciTab('tabBaza');
+      prikaziBazu();
+    };
 
     function prikaziBazu() {
       const lista = document.getElementById('lista-simptoma');
@@ -99,41 +100,48 @@
       `).join('');
     }
 
+    // --- LOGIKA ZA OBRADU ---
     function izvršiProtokol() {
       const ko = document.getElementById('nurse-name').value;
       const unosRaw = document.getElementById('patient-input').value;
       const alertBox = document.getElementById('the-alert');
       
-      if (!ko) { alert("Moraš se potpisati!"); return; }
+      if (!ko) { alert("SISTEM: Moraš se potpisati!"); return; }
       if (!unosRaw) return;
 
       const unos = unosRaw.toLowerCase();
       let pogodak = null;
 
-      // Logika za brojeve
-      const match = unos.match(/\d+/);
-      const broj = match ? parseInt(match[0]) : null;
+      // 1. Provera brojeva (pritisak i temperatura)
+      const match = unos.match(/\d+\.?\d*/);
+      const broj = match ? parseFloat(match[0].replace(',', '.')) : null;
 
-      if (unos.includes('pritisak') && broj) {
+      if (unos.includes('pritisak') && broj !== null) {
         if (broj > 200) pogodak = devSimptomi.find(s => s.naziv === 'Pritisak hitno');
+        else if (broj < 90) pogodak = devSimptomi.find(s => s.naziv === 'Nizak pritisak');
         else if (broj >= 160) pogodak = devSimptomi.find(s => s.naziv === 'Pritisak');
       }
 
-      // Logika za ključne reči
+      // 2. Provera ključnih reči
       if (!pogodak) {
         pogodak = devSimptomi.find(s => unos.includes(s.naziv.toLowerCase()));
       }
 
+      // Prikaz rezultata u narandžastom/crvenom polju
       if (pogodak) {
         alertBox.style.display = 'block';
         alertBox.style.borderColor = pogodak.hitno ? '#c62828' : '#ff9800';
-        alertBox.innerHTML = `<b>${pogodak.naziv.toUpperCase()}</b><br>${pogodak.prvaPomoc}<br><br><i>${pogodak.upozorenje}</i>`;
+        alertBox.style.background = pogodak.hitno ? '#ffebee' : '#fff3e0';
+        alertBox.innerHTML = `<b>${pogodak.naziv.toUpperCase()}</b><br>${pogodak.prvaPomoc}<br><br><small>⚠️ ${pogodak.upozorenje}</small>`;
+      } else {
+        alertBox.style.display = 'none';
       }
 
-      // Dodaj u dnevnik
+      // Dodavanje u Dnevnik
       const vreme = new Date().toLocaleTimeString('sr-RS', {hour: '2-digit', minute:'2-digit'});
       devLogovi.push({vreme, ko, tekst: unosRaw, hitno: pogodak ? pogodak.hitno : false});
       osvežiDnevnik();
+      document.getElementById('patient-input').value = ""; 
     }
 
     function osvežiDnevnik() {
@@ -146,21 +154,23 @@
     }
 
     function viberProtokol() {
-      if (devLogovi.length === 0) return;
+      if (devLogovi.length === 0) { alert("Dnevnik je prazan!"); return; }
       const zadnji = devLogovi[devLogovi.length - 1];
-      const poruka = `IZVEŠTAJ (${zadnji.vreme}):\nSestra: ${zadnji.ko}\nSimptom: ${zadnji.tekst}`;
+      const poruka = `IZVEŠTAJ DOM LELA I FRANC:\n⏰ Vreme: ${zadnji.vreme}\n👤 Sestra: ${zadnji.ko}\n📑 Opis: ${zadnji.tekst}`;
       window.location.href = "viber://forward?text=" + encodeURIComponent(poruka);
     }
 
     function registrujHitnu() {
       const ko = document.getElementById('nurse-name').value || "NEPOZNATO";
-      devLogovi.push({vreme: "HITNO", ko, tekst: "🚑 AKTIVIRAN POZIV HITNOJ POMOĆI!", hitno: true});
-      osvežiDnevnik();
-      alert("POZIV REGISTROVAN! Odmah pozovite 194!");
+      if (confirm("Potvrdi aktivaciju protokola za HITNU POMOĆ?")) {
+        devLogovi.push({vreme: "!!🚨!!", ko, tekst: "🚑 HITNA POMOĆ: POZVATI 194 ODMAH!", hitno: true});
+        osvežiDnevnik();
+        alert("HITNA POMOĆ: Odmah pozovite 194!");
+      }
     }
 
     function obrišiSve() {
-      if(confirm("Brišeš ceo današnji dnevnik?")) {
+      if(confirm("Da li sigurno želiš da obrišeš ceo dnevnik?")) {
         devLogovi = [];
         osvežiDnevnik();
         document.getElementById('the-alert').style.display = 'none';

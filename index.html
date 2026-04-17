@@ -1,113 +1,111 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIGITALNI IZVEŠTAJ - VIBER PRO v2</title>
-  <style>
-    body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
- .header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
- .container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    #log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
- .log-entry { padding: 8px; border-bottom: 1px solid #eee; line-height: 1.4; }
- .log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
- .negovatelj { color: #1a4a8e; font-weight: bold; }
- .pacijent { color: #e65100; font-weight: bold; }
-    input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
- .btn-main { background: #1a4a8e; color: white; font-weight: bold; border: none; cursor: pointer; }
- .btn-viber { background: #7360f2; color: white; font-weight: bold; border: none; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
- .btn-emergency { background: #e53935; color: white; font-weight: bold; border: none; margin-top: 10px; cursor: pointer; }
- .btn-clear { background: #333; color: white; font-size: 12px; opacity: 0.5; border: none; margin-top: 40px; cursor: pointer; }
-    #the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; text-align: left; line-height: 1.5; border-radius: 4px; }
-    #the-alert b { color: #e65100; }
- .tab-nav { display: flex; margin-bottom: 15px; }
- .tab-nav button { width: 50%; margin: 0; border-radius: 0; background: #ddd; color: #333; border: none; cursor: pointer; }
- .tab-nav button.active { background: #1a4a8e; color: white; }
- .tab { display: none; }
- .tab.active { display: block; }
- .kartica { border: 1px solid #ddd; padding: 10px; margin: 8px 0; border-radius: 8px; background: #fafafa; }
- .kartica b { color: #1a4a8e; }
-    label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
- .checkbox-wrap { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
- .checkbox-wrap input { width: auto; }
- .footer { font-size:10px; color:#888; text-align:center; margin-top:30px; padding:15px 5px; border-top:1px solid #eee; line-height:1.4; }
- .dev-notice { background: #333; color: #0f0; font-family: monospace; font-size: 10px; padding: 5px; text-align: center; }
-  </style>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIGITALNI IZVEŠTAJ - VIBER PRO v2</title>
+<style>
+body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+.header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
+.container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+#log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
+.log-entry { padding: 8px; border-bottom: 1px solid #eee; line-height: 1.4; }
+.log-entry.alert { background: #ffebee; color: #c62828; font-weight: bold; border-left: 5px solid #c62828; }
+.negovatelj { color: #1a4a8e; font-weight: bold; }
+.pacijent { color: #e65100; font-weight: bold; }
+input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+.btn-main { background: #1a4a8e; color: white; font-weight: bold; border: none; cursor: pointer; }
+.btn-viber { background: #7360f2; color: white; font-weight: bold; border: none; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-emergency { background: #e53935; color: white; font-weight: bold; border: none; margin-top: 10px; cursor: pointer; }
+.btn-clear { background: #333; color: white; font-size: 12px; opacity: 0.5; border: none; margin-top: 40px; cursor: pointer; }
+#the-alert { display: none; padding: 15px; background: #fff3e0; border: 2px solid #ff9800; margin-bottom: 10px; text-align: left; line-height: 1.5; border-radius: 4px; }
+#the-alert b { color: #e65100; }
+.tab-nav { display: flex; margin-bottom: 15px; }
+.tab-nav button { width: 50%; margin: 0; border-radius: 0; background: #ddd; color: #333; border: none; cursor: pointer; }
+.tab-nav button.active { background: #1a4a8e; color: white; }
+.tab { display: none; }
+.tab.active { display: block; }
+.kartica { border: 1px solid #ddd; padding: 10px; margin: 8px 0; border-radius: 8px; background: #fafafa; }
+.kartica b { color: #1a4a8e; }
+label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
+.checkbox-wrap { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.checkbox-wrap input { width: auto; }
+.footer { font-size:10px; color:#888; text-align:center; margin-top:30px; padding:15px 5px; border-top:1px solid #eee; line-height:1.4; }
+.dev-notice { background: #333; color: #0f0; font-family: monospace; font-size: 10px; padding: 5px; text-align: center; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-  <div class="dev-notice">DEV MOD: v2 - Sveobuhvatni digitalni izveštaj</div>
-  <div class="header">
-    <h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
-    <p>DOM LELA I FRANC - NEGOTIN</p>
-  </div>
-  <div class="container">
-    <div class="tab-nav">
-      <button id="tabDnevnikBtn" class="active">DNEVNIK</button>
-      <button id="tabBazaBtn">BAZA ZNANJA</button>
-    </div>
-    <div id="tabDnevnik" class="tab active">
-      <div id="log-area">Dnevnik je prazan.</div>
-      <div id="the-alert"></div>
-      <input type="text" id="nurse-name" placeholder="IME NEGOVATELJA (OBAVEZNO): Igor, Ana...">
-      <input type="text" id="patient-input" placeholder="PACIJENT I SIMPTOM: Milan je imao pritisak 180, Dragi - mučnina...">
-      <button class="btn-main" onclick="izvršiProtokol()">ZABELEŽI I DAJ UPUTSTVO</button>
-      <button class="btn-viber" onclick="viberProtokol()">🟣 POŠALJI NA VIBER</button>
-      <button class="btn-emergency" onclick="registrujHitnu()">🚑 HITNA POMOĆ</button>
-      <button class="btn-clear" onclick="obrišiSve()">OBRIŠI KOMPLETAN DNEVNIK</button>
-      <div class="footer">
-        <b>UPOZORENJE:</b> Ovaj sistem je deo medicinske dokumentacije.<br>
-        Neovlašćen pristup, otkrivanje ili izmena podataka podleže krivičnoj odgovornosti<br>
-        po čl. 132, čl. 139 i čl. 146 Krivičnog zakonika RS i Zakona o zaštiti podataka o ličnosti.<br>
-        Svaki pristup se evidentira sa IP adresom i vremenom.<br><br>
-        DOM LELA I FRANC - NEGOTIN © 2026
-      </div>
-    </div>
-    <div id="tabBaza" class="tab">
-      <input type="text" id="pretragaSimptoma" placeholder="Traži simptom u bazi..." oninput="prikaziBazu()">
-      <div id="lista-simptoma"></div>
-      <hr>
-      <h4>Dodaj/Izmeni simptom u bazi</h4>
-      <label>NAZIV SIMPTOMA</label>
-      <input type="text" id="noviSimptomNaziv" placeholder="npr. Mučnina">
-      <label>PRVA POMOĆ - Šta može odmah</label>
-      <textarea id="noviSimptomPrvaPomoc" placeholder="1. Popij 1 tabletu Klometola 10mg. 2. Sedi uspravno 30 min."></textarea>
-      <label>UPOZORENJE - Kad ne sme i šta ako ne pomogne</label>
-      <textarea id="noviSimptomUpozorenje" placeholder="NE UZIMAJ ako si alergičan. Ako ne prestane za 1h, ZOVI SESTRU."></textarea>
-      <div class="checkbox-wrap">
-        <input type="checkbox" id="noviSimptomHitno">
-        <label for="noviSimptomHitno" style="margin:0;">Označi kao HITNO stanje</label>
-      </div>
-      <button class="btn-main" onclick="sačuvajSimptom()">SAČUVAJ U BAZU</button>
-    </div>
-  </div>
-  <script>
-    try {
-      var firebaseConfig = {
-        apiKey: "AIzaSyBa6hWwC1dula7p7Pf3eL9gmxsw1gYQq5M",
-        authDomain: "prva-pomoc-d4249.firebaseapp.com",
-        databaseURL: "https://prva-pomoc-d4249-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "prva-pomoc-d4249",
-        storageBucket: "prva-pomoc-d4249.firebasestorage.app",
-        messagingSenderId: "57642952982",
-        appId: "1:57642952982:web:0ff80900c5c35c5bff2519"
-      };
-      firebase.initializeApp(firebaseConfig);
-      var database = firebase.database();
-      var FIREBASE_AKTIVAN = true;
-    } catch(e) {
-      var FIREBASE_AKTIVAN = false;
-      console.log("Firebase nije aktivan, radi u DEV modu");
-    }
+<div class="dev-notice">DEV MOD: v2 - Sveobuhvatni digitalni izveštaj</div>
+<div class="header">
+<h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
+<p>DOM LELA I FRANC - NEGOTIN</p>
+</div>
+<div class="container">
+<div class="tab-nav">
+<button id="tabDnevnikBtn" class="active">DNEVNIK</button>
+<button id="tabBazaBtn">BAZA ZNANJA</button>
+</div>
+<div id="tabDnevnik" class="tab active">
+<div id="log-area">Dnevnik je prazan.</div>
+<div id="the-alert"></div>
+<input type="text" id="nurse-name" placeholder="IME NEGOVATELJA (OBAVEZNO): Igor, Ana...">
+<input type="text" id="patient-input" placeholder="PACIJENT I SIMPTOM: Milan je imao pritisak 180, Dragi - mučnina...">
+<button class="btn-main" onclick="izvršiProtokol()">ZABELEŽI I DAJ UPUTSTVO</button>
+<button class="btn-viber" onclick="viberProtokol()">🟣 POŠALJI NA VIBER</button>
+<button class="btn-emergency" onclick="registrujHitnu()">🚑 HITNA POMOĆ</button>
+<button class="btn-clear" onclick="obrišiSve()">OBRIŠI KOMPLETAN DNEVNIK</button>
+<div class="footer">
+<b>UPOZORENJE:</b> Ovaj sistem je deo medicinske dokumentacije.<br>
+Neovlašćen pristup, otkrivanje ili izmena podataka podleže krivičnoj odgovornosti<br>
+po čl. 132, čl. 139 i čl. 146 Krivičnog zakonika RS i Zakona o zaštiti podataka o ličnosti.<br>
+Svaki pristup se evidentira sa IP adresom i vremenom.<br><br>
+DOM LELA I FRANC - NEGOTIN © 2026
+</div>
+<div id="tabBaza" class="tab">
+<input type="text" id="pretragaSimptoma" placeholder="Traži simptom u bazi..." oninput="prikaziBazu()">
+<div id="lista-simptoma"></div>
+<hr>
+<h4>Dodaj/Izmeni simptom u bazi</h4>
+<label>NAZIV SIMPTOMA</label>
+<input type="text" id="noviSimptomNaziv" placeholder="npr. Mučnina">
+<label>PRVA POMOĆ - Šta može odmah</label>
+<textarea id="noviSimptomPrvaPomoc" placeholder="1. Popij 1 tabletu Klometola 10mg. 2. Sedi uspravno 30 min."></textarea>
+<label>UPOZORENJE - Kad ne sme i šta ako ne pomogne</label>
+<textarea id="noviSimptomUpozorenje" placeholder="NE UZIMAJ ako si alergičan. Ako ne prestane za 1h, ZOVI SESTRU."></textarea>
+<div class="checkbox-wrap">
+<input type="checkbox" id="noviSimptomHitno">
+<label for="noviSimptomHitno" style="margin:0;">Označi kao HITNO stanje</label>
+</div>
+<button class="btn-main" onclick="sačuvajSimptom()">SAČUVAJ U BAZU</button>
+</div>
+<script>
+try {
+  var firebaseConfig = {
+    apiKey: "AIzaSyBa6hWwC1dula7p7Pf3eL9gmxsw1gYQq5M",
+    authDomain: "prva-pomoc-d4249.firebaseapp.com",
+    databaseURL: "https://prva-pomoc-d4249-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "prva-pomoc-d4249",
+    storageBucket: "prva-pomoc-d4249.firebasestorage.app",
+    messagingSenderId: "57642952982",
+    appId: "1:57642952982:web:0ff80900c5c35c5bff2519"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+  var FIREBASE_AKTIVAN = true;
+} catch(e) {
+  var FIREBASE_AKTIVAN = false;
+  console.log("Firebase nije aktivan, radi u DEV modu");
+}
 
-    let devLogovi = [];
+let devLogovi = [];
 let devSimptomi = [
   { naziv: "Dijareja", alias: ["dijareja", "diarea", "proliv", "tečna stolica", "retka stolica"], prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici.", hitno: false },
   { naziv: "Mučnina", alias: ["mučnina", "mucnina", "gadjenje", "nagon za povraćanje"], prvaPomoc: "1. Popij 1 tbl Klometola 10mg. 2. Sedi uspravno 30 min.", upozorenje: "Ako počne povraćanje, zovi sestru.", hitno: false },
   { naziv: "Pritisak", alias: ["pritisak", "visok pritisak", "hipertenzija"], prvaPomoc: "1. Katopil 25mg pod jezik (ako je 160-180). 2. Nifelat 10mg (ako je 180-200).", upozorenje: "Lezi 30 min nakon leka.", hitno: false },
   { naziv: "Pritisak hitno", alias: ["pritisak hitno"], prvaPomoc: "Prekini sve aktivnosti. Sedi ili lezi.", upozorenje: "PRITISAK PREKO 200 JE HITNO STANJE!", hitno: true },
-  { naziv: "Bol u grudima", alias: ["bol u grudima", "stezanje u grudima", "infarkt"], prvaPomoc: "Sedi ili lezi odmah. Ne uzimaj vodu.", upozorenje: "ODMAH ZOVI 194!", hitno: true },
+  { naziv: "Bol u grudima", alias: ["bol u grudima", "stezanje u grudima", "infarkt"], prvaPomoc: "Sedi ili lezi odmah. Ne uzimaj vodu.", upozorenje: "ODMAH ZOVI 019/547-124!", hitno: true },
   { naziv: "Temperatura", alias: ["temperatura", "grozница", "povišena temperatura"], prvaPomoc: "Paracetamol 500mg (ako je >38.5).", upozorenje: "Ako je >39.5, zovi pomoć.", hitno: false },
   { naziv: "Nizak pritisak", alias: ["nizak pritisak", "hipotenzija"], prvaPomoc: "1. Popij 1-2 čaše vode. 2. Lezi sa uzdignutim nogama 10-15 min.", upozorenje: "Ako se javi vrtoglavica ili slabost, odmah sedi ili lezi.", hitno: false }
 ];
@@ -116,11 +114,9 @@ function dodajLog(negovatelj, pacijent, tekst, hitno = false) {
   const datum = new Date();
   const vreme = datum.toLocaleDateString('sr-RS') + ' ' + datum.toLocaleTimeString('sr-RS');
   const log = { vreme, negovatelj, pacijent, tekst, hitno, timestamp: Date.now() };
-
   if (FIREBASE_AKTIVAN) {
     database.ref('dnevnik').push(log);
   }
-
   const logDiv = document.getElementById('log-area');
   if (logDiv.innerText === 'Dnevnik je prazan.') logDiv.innerHTML = '';
   const entry = document.createElement('div');
@@ -141,7 +137,7 @@ function izvršiProtokol() {
   const negovatelj = document.getElementById('nurse-name').value.trim();
   const unos = document.getElementById('patient-input').value.trim();
   const alertBox = document.getElementById('the-alert');
-
+  
   if (!negovatelj) {
     alertBox.style.display = 'block';
     alertBox.style.borderColor = '#ff9800';
@@ -156,13 +152,13 @@ function izvršiProtokol() {
     alertBox.innerHTML = '<b>GREŠKA:</b> Opiši pacijenta i simptom!';
     return;
   }
-
+  
   let pacijent = "Nepoznat";
   let simptomTekst = unos;
-
-  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+imao\s+(.+)$/i);
+  
+  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+i[nm]a?o\s+(.+)$/i);
   const crtaMatch = unos.match(/^(.+?)\s*[-,]\s*(.+)$/);
-
+  
   if (jeImaoMatch) {
     pacijent = jeImaoMatch[1].trim();
     simptomTekst = jeImaoMatch[2].trim();
@@ -170,56 +166,69 @@ function izvršiProtokol() {
     pacijent = crtaMatch[1].trim();
     simptomTekst = crtaMatch[2].trim();
   }
-
+  
   alertBox.style.display = 'none';
   const simptomLower = simptomTekst.toLowerCase();
   let nadjen = null;
-
-  const pritisakMatch = simptomLower.match(/pritisak\s*(\d+)/);
+  
+  const pritisakMatch = simptomLower.match(/pr[irtis]+ak\s*(\d+)[\/\-]?(\d+)?/);
   if (pritisakMatch) {
-    const vrednost = parseInt(pritisakMatch[1]);
-    if (vrednost >= 200) {
+    const sistolni = parseInt(pritisakMatch[1]);
+    const dijastolni = pritisakMatch[2]? parseInt(pritisakMatch[2]) : 0;
+    const prikaz = `${sistolni}/${dijastolni || '?'}`;
+    
+    if (sistolni >= 200 || dijastolni >= 120) {
       nadjen = devSimptomi.find(s => s.naziv === "Pritisak hitno");
-    } else if (vrednost < 90) {
+      simptomTekst = `pritisak ${prikaz}`;
+    } else if (sistolni < 90) {
       nadjen = devSimptomi.find(s => s.naziv === "Nizak pritisak");
-    } else if (vrednost >= 160) {
+      simptomTekst = `pritisak ${prikaz}`;
+    } else if (sistolni >= 160 || dijastolni >= 100) {
       nadjen = devSimptomi.find(s => s.naziv === "Pritisak");
-    } else if (vrednost >= 90 && vrednost <= 140) {
+      simptomTekst = `pritisak ${prikaz}`;
+    } else if (sistolni >= 90 && sistolni <= 140 && (dijastolni === 0 || (dijastolni >= 60 && dijastolni <= 90))) {
       alertBox.style.display = 'block';
       alertBox.style.borderColor = '#4caf50';
       alertBox.style.background = '#e8f5e9';
-      alertBox.innerHTML = `<b>INFO:</b> Izmeren pritisak ${vrednost} je u granicama normale.<br>Nastavi sa praćenjem.`;
-      dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - normalan nalaz`);
+      alertBox.innerHTML = `<b>INFO:</b> Izmeren pritisak ${prikaz} je u granicama normale.<br>Nastavi sa praćenjem.`;
+      dodajLog(negovatelj, pacijent, `Pritisak ${prikaz} - normalan nalaz`);
       document.getElementById('patient-input').value = '';
       return;
     } else {
       alertBox.style.display = 'block';
       alertBox.style.borderColor = '#ff9800';
       alertBox.style.background = '#fff3e0';
-      alertBox.innerHTML = `<b>NAPOMENA:</b> Pritisak ${vrednost} je blago povišen.<br>Odmori 15min pa ponovi merenje. Ako ostane povišen, konsultuj sestru.`;
-      dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - blago povišen`);
+      alertBox.innerHTML = `<b>NAPOMENA:</b> Pritisak ${prikaz} je blago povišen.<br>Odmori 15min pa ponovi merenje. Ako ostane povišen, konsultuj sestru.`;
+      dodajLog(negovatelj, pacijent, `Pritisak ${prikaz} - blago povišen`);
       document.getElementById('patient-input').value = '';
       return;
     }
   } else {
     nadjen = nadjiSimptom(simptomTekst);
   }
-
+  
   if (nadjen) {
     alertBox.style.display = 'block';
     if (nadjen.hitno) {
       alertBox.style.borderColor = '#e53935';
       alertBox.style.background = '#ffebee';
+      alertBox.innerHTML = `
+        <b>PACIJENT: ${pacijent}</b><br>
+        <b>SIMPTOM: ${nadjen.naziv}</b><br><br>
+        <b>PRVA POMOĆ:</b><br>${nadjen.prvaPomoc}<br><br>
+        <b>UPOZORENJE:</b><br>${nadjen.upozorenje}<br><br>
+        <b style="color:#e53935;">HITNO: POZOVI 019/547-124</b>
+      `;
     } else {
       alertBox.style.borderColor = '#ff9800';
       alertBox.style.background = '#fff3e0';
+      alertBox.innerHTML = `
+        <b>PACIJENT: ${pacijent}</b><br>
+        <b>SIMPTOM: ${nadjen.naziv}</b><br><br>
+        <b>PRVA POMOĆ:</b><br>${nadjen.prvaPomoc}<br><br>
+        <b>UPOZORENJE:</b><br>${nadjen.upozorenje}
+      `;
     }
-    alertBox.innerHTML = `
-      <b>PACIJENT: ${pacijent}</b><br>
-      <b>SIMPTOM: ${nadjen.naziv}</b><br><br>
-      <b>PRVA POMOĆ:</b><br>${nadjen.prvaPomoc}<br><br>
-      <b>UPOZORENJE:</b><br>${nadjen.upozorenje}
-    `;
     dodajLog(negovatelj, pacijent, `${nadjen.naziv} - ${simptomTekst}`, nadjen.hitno);
   } else {
     alertBox.style.display = 'block';
@@ -229,61 +238,86 @@ function izvršiProtokol() {
     dodajLog(negovatelj, pacijent, `Nepoznat simptom - ${simptomTekst}`);
   }
   document.getElementById('patient-input').value = '';
-    }
+}
 
-    function viberProtokol() {
-      const logText = document.getElementById('log-area').innerText;
-      const tekst = encodeURIComponent(`DIGITALNI IZVEŠTAJ - DOM LELA I FRANC\n\n${logText}`);
-      window.open(`viber://forward?text=${tekst}`, '_blank');
-    }
-
-    function registrujHitnu() {
-  const negovatelj = document.getElementById('nurse-name').value.trim() || 'Nepoznat negovatelj';
+function viberProtokol() {
+  const alertBox = document.getElementById('the-alert');
+  const negovatelj = document.getElementById('nurse-name').value.trim();
   const unos = document.getElementById('patient-input').value.trim();
-  let pacijent = "Nepoznat pacijent";
-
-  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+imao\s+(.+)$/i);
+  
+  if (!alertBox.innerText || alertBox.style.display === 'none') {
+    alert('Prvo klikni ZABELEŽI I DAJ UPUTSTVO da se generiše poruka!');
+    return;
+  }
+  
+  let pacijent = "Nepoznat";
+  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+i[nm]a?o\s+(.+)$/i);
   const crtaMatch = unos.match(/^(.+?)\s*[-,]\s*(.+)$/);
   if (jeImaoMatch) pacijent = jeImaoMatch[1].trim();
   else if (crtaMatch) pacijent = crtaMatch[1].trim();
+  
+  const poruka = `*AURA - IZVEŠTAJ*\nNegovatelj: ${negovatelj}\nPacijent: ${pacijent}\n\n${alertBox.innerText.replace(/<br>/g, '\n').replace(/<\/?b>/g, '*')}`;
+  const viberLink = `viber://forward?text=${encodeURIComponent(poruka)}`;
+  
+  dodajLog(negovatelj, pacijent, 'Poslato na Viber');
+  window.open(viberLink, '_blank');
+}
 
+function registrujHitnu() {
+  const negovatelj = document.getElementById('nurse-name').value.trim() || 'Nepoznat negovatelj';
+  const unos = document.getElementById('patient-input').value.trim();
+  let pacijent = "Nepoznat pacijent";
+  
+  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+i[nm]a?o\s+(.+)$/i);
+  const crtaMatch = unos.match(/^(.+?)\s*[-,]\s*(.+)$/);
+  if (jeImaoMatch) pacijent = jeImaoMatch[1].trim();
+  else if (crtaMatch) pacijent = crtaMatch[1].trim();
+  
   dodajLog(negovatelj, pacijent, 'POZVANA HITNA POMOĆ 019/547-124!', true);
   alert(`Registrovano pozivanje hitne pomoći za: ${pacijent}.\nPozovi 019/547-124!`);
+}
+
+function obrišiSve() {
+  if (confirm('Da li si siguran da želiš da obrišeš kompletan dnevnik?')) {
+    if (FIREBASE_AKTIVAN) {
+      database.ref('dnevnik').remove();
     }
+    document.getElementById('log-area').innerHTML = 'Dnevnik je prazan.';
+    document.getElementById('the-alert').style.display = 'none';
+    devLogovi = [];
+  }
+}
 
-    function obrišiSve() {
-      if (confirm('Da li si siguran da želiš da obrišeš kompletan dnevnik?')) {
-        if (FIREBASE_AKTIVAN) {
-          database.ref('dnevnik').remove();
-        }
-        document.getElementById('log-area').innerHTML = 'Dnevnik je prazan.';
-        document.getElementById('the-alert').style.display = 'none';
-        devLogovi = [];
-      }
-    }
+function sačuvajSimptom() {
+  const naziv = document.getElementById('noviSimptomNaziv').value.trim();
+  const pomoc = document.getElementById('noviSimptomPrvaPomoc').value.trim();
+  const upoz = document.getElementById('noviSimptomUpozorenje').value.trim();
+  const hitno = document.getElementById('noviSimptomHitno').checked;
+  
+  if (!naziv ||!pomoc ||!upoz) {
+    alert('Popuni sva polja!');
+    return;
+  }
+  
+  const postojeci = devSimptomi.findIndex(s => s.naziv.toLowerCase() === naziv.toLowerCase());
+  const novi = { naziv, prvaPomoc: pomoc, upozorenje: upoz, hitno };
+  
+  if (postojeci >= 0) devSimptomi[postojeci] = novi;
+  else devSimptomi.push(novi);
+  
+  if (FIREBASE_AKTIVAN) {
+    database.ref('simptomi/' + naziv.replace(/\s/g,'_')).set(novi);
+  }
+  
+  alert('Simptom sačuvan!');
+  document.getElementById('noviSimptomNaziv').value = '';
+  document.getElementById('noviSimptomPrvaPomoc').value = '';
+  document.getElementById('noviSimptomUpozorenje').value = '';
+  document.getElementById('noviSimptomHitno').checked = false;
+  prikaziBazu();
+}
 
-    function sačuvajSimptom() {
-      const naziv = document.getElementById('noviSimptomNaziv').value.trim();
-      const pomoc = document.getElementById('noviSimptomPrvaPomoc').value.trim();
-      const upoz = document.getElementById('noviSimptomUpozorenje').value.trim();
-      const hitno = document.getElementById('noviSimptomHitno').checked;
-
-      if (!naziv ||!pomoc ||!upoz) {
-        alert('Popuni sva polja!');
-        return;
-      }
-
-      const postojeci = devSimptomi.findIndex(s => s.naziv.toLowerCase() === naziv.toLowerCase());
-      const novi = { naziv, prvaPomoc: pomoc, upozorenje: upoz, hitno };
-
-      if (postojeci >= 0) devSimptomi[postojeci] = novi;
-      else devSimptomi.push(novi);
-
-      if (FIREBASE_AKTIVAN) {
-        database.ref('simptomi/' + naziv.replace(/\s/g,'_')).set(novi);
-      }
-
-      function prikaziBazu() {
+function prikaziBazu() {
   const lista = document.getElementById('lista-simptoma');
   const filter = document.getElementById('pretragaSimptoma').value.toLowerCase();
   const filtrirani = devSimptomi.filter(s => {
@@ -299,10 +333,53 @@ function izvršiProtokol() {
       <small><b>Upozorenje:</b> ${s.upozorenje}</small>
     </div>
   `).join('') || '<p style="text-align:center;color:#888;">Nema rezultata.</p>';
-      }
+}
 
-    loadData();
+function loadData() {
+  if (FIREBASE_AKTIVAN) {
+    database.ref('dnevnik').orderByChild('timestamp').limitToLast(50).on('value', snapshot => {
+      const logDiv = document.getElementById('log-area');
+      logDiv.innerHTML = '';
+      const logs = [];
+      snapshot.forEach(child => logs.push(child.val()));
+      logs.reverse().forEach(log => {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry' + (log.hitno? ' alert' : '');
+        entry.innerHTML = `<b>[${log.vreme}]</b> <span class="negovatelj">Negovatelj: ${log.negovatelj}</span> | <span class="pacijent">Pacijent: ${log.pacijent}</span> | ${log.tekst}`;
+        logDiv.appendChild(entry);
+      });
+      if (logs.length === 0) logDiv.innerHTML = 'Dnevnik je prazan.';
+    });
+    
+    database.ref('simptomi').on('value', snapshot => {
+      devSimptomi = [];
+      snapshot.forEach(child => devSimptomi.push(child.val()));
+      prikaziBazu();
+    });
+  } else {
     prikaziBazu();
-  </script>
+  }
+}
+
+// Poveži tabove i učitaj sve kad se stranica otvori
+window.onload = function() {
+  document.getElementById('tabDnevnikBtn').onclick = function() {
+    document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('tabDnevnik').classList.add('active');
+  };
+  
+  document.getElementById('tabBazaBtn').onclick = function() {
+    document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('tabBaza').classList.add('active');
+    prikaziBazu();
+  };
+  
+  loadData();
+};
+</script>
 </body>
 </html>

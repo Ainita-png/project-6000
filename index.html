@@ -163,19 +163,29 @@ function parsirajUnos(tekst) {
   tekst = tekst.trim();
   let pacijent = "Nepoznat";
   let simptom = tekst;
+
+  // Prvo probaj da nađeš "je imao", "-", "," ili ":"
   let delovi = tekst.split(/ je imao | je imala | ima | - |,|:/i);
   if (delovi.length > 1) {
     pacijent = delovi[0].trim();
     simptom = delovi.slice(1).join(' ').trim();
   } else {
+    // Ako nema, traži prvu reč koja NIJE simptom da bude pacijent
+    const sviSimptomi = devSimptomi.flatMap(s => [s.naziv.toLowerCase(),...s.alias]);
     delovi = tekst.split(' ');
-    if (delovi.length > 1) {
+
+    // Ako prva reč nije simptom, onda je pacijent
+    if (delovi.length > 1 &&!sviSimptomi.some(s => delovi[0].toLowerCase() === s)) {
       pacijent = delovi[0];
       simptom = delovi.slice(1).join(' ');
+    } else {
+      // Inače je sve simptom, pacijent nepoznat
+      pacijent = "Nepoznat";
+      simptom = tekst;
     }
   }
   return { pacijent: pacijent || "Nepoznat", simptom: simptom || "Nepoznat" };
-}
+  }
 
 function nađiSimptom(tekstSimptoma) {
   tekstSimptoma = tekstSimptoma.toLowerCase();

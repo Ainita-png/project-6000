@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIGITALNI IZVEŠTAJ - VIBER PRO v3</title>
+<title>DIGITALNI IZVEŠTAJ - VIBER PRO v3.1</title>
 <style>
-body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+body { font-family: sans-serif; background: #f4f4; margin: 0; padding: 0; }
 .header { background: #1a4a8e; color: white; text-align: center; padding: 20px; }
 .container { max-width: 500px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 #log-area { height: 300px; border: 1px solid #ddd; overflow-y: auto; padding: 10px; margin-bottom: 20px; font-size: 0.85em; background: #fff; text-align: left; }
@@ -37,7 +37,7 @@ label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; displ
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<div class="dev-notice">DEV MOD: v3 - Sveobuhvatni digitalni izveštaj</div>
+<div class="dev-notice">DEV MOD: v3.1 - Ispravka parsiranja pritiska</div>
 <div class="header">
 <h2>DIGITALNI IZVEŠTAJ - VIBER</h2>
 <p>DOM LELA I FRANC - NEGOTIN</p>
@@ -185,7 +185,7 @@ function parsirajUnos(tekst) {
     }
   }
   return { pacijent: pacijent || "Nepoznat", simptom: simptom || "Nepoznat" };
-  }
+}
 
 function nađiSimptom(tekstSimptoma) {
   tekstSimptoma = tekstSimptoma.toLowerCase();
@@ -200,13 +200,34 @@ function izvršiProtokol() {
 
   const { pacijent, simptom } = parsirajUnos(unos);
   const vreme = new Date().toLocaleString('sr-RS');
-  const simptomBaza = nađiSimptom(simptom);
+  let simptomBaza = nađiSimptom(simptom);
 
   let logTekst = "";
   let alertHTML = "";
   let tip = "info";
 
-  if (simptomBaza) {
+  // SPECIJALNA PROVERA ZA PRITISAK
+  if (simptom.toLowerCase().includes('pritisak')) {
+    const brojke = simptom.match(/\d+/g);
+    if (brojke && brojke.length >= 2) {
+      const gornji = parseInt(brojke[0]);
+      const donji = parseInt(brojke[1]);
+
+      if (gornji >= 180 || donji >= 120) {
+        simptomBaza = devSimptomi.find(s => s.naziv === "Pritisak hitno");
+        logTekst = `HITNO! Pritisak ${gornji}/${donji} mmHg`;
+        alertHTML = `<b style="color:#e53935;">HITNO STANJE!</b><br><b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>PRVA POMOĆ:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
+        tip = "alert";
+      } else {
+        logTekst = `Pritisak ${gornji}/${donji} mmHg - normalan`;
+        alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>NAPOMENA:</b> Vrednosti su u granicama normale. Pratiti stanje.`;
+        tip = "info";
+        simptomBaza = null;
+      }
+    }
+  }
+
+  if (simptomBaza && tip!== "info") {
     logTekst = `${simptomBaza.naziv} - ${simptom}`;
     alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>SIMPTOM:</b> ${simptomBaza.naziv}<br><br><b>PRVA POMOĆ:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
     if (simptomBaza.hitno) {
@@ -214,7 +235,7 @@ function izvršiProtokol() {
       alertHTML = `<b style="color:#e53935;">HITNO STANJE!</b><br>` + alertHTML;
       tip = "alert";
     }
-  } else {
+  } else if (!simptomBaza && tip!== "info") {
     logTekst = `Simptom nije pronađen: ${simptom}`;
     alertHTML = `<b>NAPOMENA:</b> Simptom nije pronađen u bazi.<br>Evidentirano u dnevnik.`;
   }

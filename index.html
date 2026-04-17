@@ -193,75 +193,69 @@ function nađiSimptom(tekstSimptoma) {
 }
 
 function izvršiProtokol() {
-  const nurse = nurseInput.value.trim();
-  if (!nurse) { alert("IME NEGOVATELJA JE OBAVEZNO!"); return; }
-  const unos = patientInput.value.trim();
-  if (!unos) { alert("POLJE ZA PACIJENTA I SIMPTOM JE PRAZNO!"); return; }
+    const nurse = nurseInput.value.trim();
+    if (!nurse) { alert("IME NEGOVATELJA JE OBAVEZNO!"); return; }
+    const unos = patientInput.value.trim();
+    if (!unos) { alert("POLJE ZA PACIJENTA I SIMPTOM JE PRAZNO!"); return; }
+    
+    const { pacijent, simptom } = parsirajUnos(unos);
+    const vreme = new Date().toLocaleString('sr-RS');
+    let simptomBaza = nađiSimptom(simptom);
+    
+    let logTekst = "Zabeleženo. Pratiti stanje.";
+    let alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>NAPOMENA:</b> Zabeleženo. Pratiti stanje.`;
+    let tip = "info";
 
-  const { pacijent, simptom } = parsirajUnos(unos);
-  const vreme = new Date().toLocaleString('sr-RS');
-  let simptomBaza = nađiSimptom(simptom);
+    // 1. SPECIJALNA PROVERA ZA PRITISAK - ima prioritet
+    if (simptom.toLowerCase().includes('pritisak')) {
+        const pritisakDva = simptom.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
+        const pritisakJedan = simptom.match(/pritisak\s*(\d{2,3})/i);
 
-  let logTekst = "";
-  let alertHTML = "";
-  let tip = "info";
-
-// SPECIJALNA PROVERA ZA PRITISAK - v3.2
-if (simptom.toLowerCase().includes('pritisak')) {
-    // Hvata 150/100 I pritisak 180
-    const pritisakDva = simptom.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
-    const pritisakJedan = simptom.match(/pritisak\s*(\d{2,3})/i);
-
-    if (pritisakDva) {
-        const gornji = parseInt(pritisakDva[1]);
-        const donji = parseInt(pritisakDva[2]);
-        if (gornji >= 140 || donji >= 90) {
-            simptomBaza = devSimptomi.find(s => s.naziv === "Pritisak hitno");
-            logTekst = `Povišen pritisak ${gornji}/${donji} mmHg - OBAVESTITI SESTRU!`;
-            alertHTML = `<b style="color:#e53935;">POVIŠEN PRITISAK!</b><br><b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>UPUTSTVO:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
-            tip = "alert";
-        } else {
-            logTekst = `Pritisak ${gornji}/${donji} mmHg - normalan`;
-            alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>NAPOMENA:</b> Vrednosti su u granicama normale. Pratiti stanje.`;
-            tip = "info";
-            simptomBaza = null;
+        if (pritisakDva) {
+            const gornji = parseInt(pritisakDva[1]);
+            const donji = parseInt(pritisakDva[2]);
+            if (gornji >= 140 || donji >= 90) {
+                simptomBaza = devSimptomi.find(s => s.naziv === "Pritisak hitno");
+                logTekst = `Povišen pritisak ${gornji}/${donji} mmHg - OBAVESTITI SESTRU!`;
+                alertHTML = `<b style="color:#e53935;">POVIŠEN PRITISAK!</b><br><b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>UPUTSTVO:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
+                tip = "alert";
+            } else {
+                logTekst = `Pritisak ${gornji}/${donji} mmHg - normalan`;
+                alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}/${donji} mmHg<br><br><b>NAPOMENA:</b> Vrednosti su u granicama normale. Pratiti stanje.`;
+                tip = "info";
+            }
+        } else if (pritisakJedan) {
+            const gornji = parseInt(pritisakJedan[1]);
+            if (gornji >= 140) {
+                simptomBaza = devSimptomi.find(s => s.naziv === "Pritisak hitno");
+                logTekst = `Povišen sistolni pritisak ${gornji} - OBAVESTITI SESTRU!`;
+                alertHTML = `<b style="color:#e53935;">POVIŠEN PRITISAK!</b><br><b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}<br><br><b>UPUTSTVO:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
+                tip = "alert";
+            } else {
+                logTekst = `Sistolni pritisak ${gornji} - normalan`;
+                alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}<br><br><b>NAPOMENA:</b> Vrednosti su u granicama normale. Pratiti stanje.`;
+                tip = "info";
+            }
         }
-    } else if (pritisakJedan) {
-        const gornji = parseInt(pritisakJedan[1]);
-        if (gornji >= 140) {
-            simptomBaza = devSimptomi.find(s => s.naziv === "Pritisak hitno");
-            logTekst = `Povišen sistolni pritisak ${gornji} - OBAVESTITI SESTRU!`;
-            alertHTML = `<b style="color:#e53935;">POVIŠEN PRITISAK!</b><br><b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}<br><br><b>UPUTSTVO:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
+    } 
+    // 2. PROVERA BAZE ZNANJA - ako nije bio pritisak
+    else if (simptomBaza) {
+        logTekst = `${simptomBaza.naziv} - ${simptom}`;
+        alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>SIMPTOM:</b> ${simptomBaza.naziv}<br><br><b>PRVA POMOĆ:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
+        if (simptomBaza.hitno) {
+            logTekst = `HITNO! ${logTekst}`;
+            alertHTML = `<b style="color:#e53935;">HITNO STANJE!</b><br>` + alertHTML;
             tip = "alert";
-        } else {
-            logTekst = `Sistolni pritisak ${gornji} - normalan`;
-            alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>PRITISAK:</b> ${gornji}<br><br><b>NAPOMENA:</b> Vrednosti su u granicama normale. Pratiti stanje.`;
-            tip = "info";
-            simptomBaza = null;
         }
     }
-                               }  //
 
-  if (simptomBaza && tip!== "info") {
-    logTekst = `${simptomBaza.naziv} - ${simptom}`;
-    alertHTML = `<b>PACIJENT:</b> ${pacijent}<br><b>SIMPTOM:</b> ${simptomBaza.naziv}<br><br><b>PRVA POMOĆ:</b><br>${simptomBaza.prvaPomoc.replace(/\n/g, '<br>')}<br><br><b>UPOZORENJE:</b><br>${simptomBaza.upozorenje}`;
-    if (simptomBaza.hitno) {
-      logTekst = `HITNO! ${logTekst}`;
-      alertHTML = `<b style="color:#e53935;">HITNO STANJE!</b><br>` + alertHTML;
-      tip = "alert";
-    }
-  } else if (!simptomBaza && tip!== "info") {
-    logTekst = `Simptom nije pronađen: ${simptom}`;
-    alertHTML = `<b>NAPOMENA:</b> Simptom nije pronađen u bazi.<br>Evidentirano u dnevnik.`;
-  }
-
-  devLogovi.push({ vreme, nurse, pacijent, tekst: logTekst, tip });
-  saveData();
-  prikaziLog();
-  theAlert.innerHTML = alertHTML;
-  theAlert.style.display = 'block';
-  patientInput.value = "";
-}
+    devLogovi.push({ vreme, nurse, pacijent, tekst: logTekst, tip });
+    saveData();
+    prikaziLog();
+    theAlert.innerHTML = alertHTML;
+    theAlert.style.display = 'block';
+    patientInput.value = "";
+      }
 
 function registrujHitnu() {
   const nurse = nurseInput.value.trim();

@@ -102,182 +102,133 @@
     }
 
     let devLogovi = [];
-    let devSimptomi = [
-      { naziv: "Dijareja", prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici.", hitno: false },
-      { naziv: "Mučnina", prvaPomoc: "1. Popij 1 tbl Klometola 10mg. 2. Sedi uspravno 30 min.", upozorenje: "Ako počne povraćanje, zovi sestru.", hitno: false },
-      { naziv: "Pritisak", prvaPomoc: "1. Katopil 25mg pod jezik (ako je 160-180). 2. Nifelat 10mg (ako je 180-200).", upozorenje: "Lezi 30 min nakon leka.", hitno: false },
-      { naziv: "Pritisak hitno", prvaPomoc: "Prekini sve aktivnosti. Sedi ili lezi.", upozorenje: "PRITISAK PREKO 200 JE HITNO STANJE!", hitno: true },
-      { naziv: "Bol u grudima", prvaPomoc: "Sedi ili lezi odmah. Ne uzimaj vodu.", upozorenje: "ODMAH ZOVI 194!", hitno: true },
-      { naziv: "Temperatura", prvaPomoc: "Paracetamol 500mg (ako je >38.5).", upozorenje: "Ako je >39.5, zovi pomoć.", hitno: false },
-      { naziv: "Nizak pritisak", prvaPomoc: "1. Popij 1-2 čaše vode. 2. Lezi sa uzdignutim nogama 10-15 min.", upozorenje: "Ako se javi vrtoglavica ili slabost, odmah sedi ili lezi.", hitno: false }
-    ];
+let devSimptomi = [
+  { naziv: "Dijareja", alias: ["dijareja", "diarea", "proliv", "tečna stolica", "retka stolica"], prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici.", hitno: false },
+  { naziv: "Mučnina", alias: ["mučnina", "mucnina", "gadjenje", "nagon za povraćanje"], prvaPomoc: "1. Popij 1 tbl Klometola 10mg. 2. Sedi uspravno 30 min.", upozorenje: "Ako počne povraćanje, zovi sestru.", hitno: false },
+  { naziv: "Pritisak", alias: ["pritisak", "visok pritisak", "hipertenzija"], prvaPomoc: "1. Katopil 25mg pod jezik (ako je 160-180). 2. Nifelat 10mg (ako je 180-200).", upozorenje: "Lezi 30 min nakon leka.", hitno: false },
+  { naziv: "Pritisak hitno", alias: ["pritisak hitno"], prvaPomoc: "Prekini sve aktivnosti. Sedi ili lezi.", upozorenje: "PRITISAK PREKO 200 JE HITNO STANJE!", hitno: true },
+  { naziv: "Bol u grudima", alias: ["bol u grudima", "stezanje u grudima", "infarkt"], prvaPomoc: "Sedi ili lezi odmah. Ne uzimaj vodu.", upozorenje: "ODMAH ZOVI 194!", hitno: true },
+  { naziv: "Temperatura", alias: ["temperatura", "grozница", "povišena temperatura"], prvaPomoc: "Paracetamol 500mg (ako je >38.5).", upozorenje: "Ako je >39.5, zovi pomoć.", hitno: false },
+  { naziv: "Nizak pritisak", alias: ["nizak pritisak", "hipotenzija"], prvaPomoc: "1. Popij 1-2 čaše vode. 2. Lezi sa uzdignutim nogama 10-15 min.", upozorenje: "Ako se javi vrtoglavica ili slabost, odmah sedi ili lezi.", hitno: false }
+];
 
-    function loadData() {
-      if (!FIREBASE_AKTIVAN) {
-        document.getElementById('log-area').innerHTML = 'Dnevnik je prazan.';
-        return;
-      }
+function dodajLog(negovatelj, pacijent, tekst, hitno = false) {
+  const datum = new Date();
+  const vreme = datum.toLocaleDateString('sr-RS') + ' ' + datum.toLocaleTimeString('sr-RS');
+  const log = { vreme, negovatelj, pacijent, tekst, hitno, timestamp: Date.now() };
 
-      document.getElementById('log-area').innerHTML = '';
+  if (FIREBASE_AKTIVAN) {
+    database.ref('dnevnik').push(log);
+  }
 
-      database.ref('simptomi').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) devSimptomi = Object.values(data);
-        prikaziBazu();
-      });
+  const logDiv = document.getElementById('log-area');
+  if (logDiv.innerText === 'Dnevnik je prazan.') logDiv.innerHTML = '';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry' + (hitno? ' alert' : '');
+  entry.innerHTML = `<b>[${vreme}]</b> <span class="negovatelj">Negovatelj: ${negovatelj}</span> | <span class="pacijent">Pacijent: ${pacijent}</span> | ${tekst}`;
+  logDiv.prepend(entry);
+}
 
-      database.ref('dnevnik').limitToLast(50).on('value', (snapshot) => {
-        const logDiv = document.getElementById('log-area');
-        logDiv.innerHTML = '';
+function nadjiSimptom(tekst) {
+  const t = tekst.toLowerCase();
+  let nadjen = devSimptomi.find(s => t.includes(s.naziv.toLowerCase()));
+  if (nadjen) return nadjen;
+  nadjen = devSimptomi.find(s => s.alias && s.alias.some(a => t.includes(a.toLowerCase())));
+  return nadjen;
+}
 
-        if (!snapshot.exists()) {
-          logDiv.innerHTML = 'Dnevnik je prazan.';
-          return;
-        }
+function izvršiProtokol() {
+  const negovatelj = document.getElementById('nurse-name').value.trim();
+  const unos = document.getElementById('patient-input').value.trim();
+  const alertBox = document.getElementById('the-alert');
 
-        snapshot.forEach((child) => {
-          const log = child.val();
-          const entry = document.createElement('div');
-          entry.className = 'log-entry' + (log.hitno? ' alert' : '');
-          entry.innerHTML = `<b>[${log.vreme}]</b> <span class="negovatelj">Negovatelj: ${log.negovatelj}</span> | <span class="pacijent">Pacijent: ${log.pacijent}</span> | ${log.tekst}`;
-          logDiv.prepend(entry);
-        });
-      });
-    }
+  if (!negovatelj) {
+    alertBox.style.display = 'block';
+    alertBox.style.borderColor = '#ff9800';
+    alertBox.style.background = '#fff3e0';
+    alertBox.innerHTML = '<b>GREŠKA:</b> Moraš upisati ime negovatelja!';
+    return;
+  }
+  if (!unos) {
+    alertBox.style.display = 'block';
+    alertBox.style.borderColor = '#ff9800';
+    alertBox.style.background = '#fff3e0';
+    alertBox.innerHTML = '<b>GREŠKA:</b> Opiši pacijenta i simptom!';
+    return;
+  }
 
-    document.getElementById('tabDnevnikBtn').onclick = () => prebaciTab('tabDnevnik');
-    document.getElementById('tabBazaBtn').onclick = () => { prebaciTab('tabBaza'); prikaziBazu(); };
+  let pacijent = "Nepoznat";
+  let simptomTekst = unos;
 
-    function prebaciTab(tabId) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      document.getElementById(tabId + 'Btn').classList.add('active');
-    }
+  const jeImaoMatch = unos.match(/^(.+?)\s+je\s+imao\s+(.+)$/i);
+  const crtaMatch = unos.match(/^(.+?)\s*[-,]\s*(.+)$/);
 
-    function prikaziBazu() {
-      const lista = document.getElementById('lista-simptoma');
-      const filter = document.getElementById('pretragaSimptoma').value.toLowerCase();
-      const filtrirani = devSimptomi.filter(s => s.naziv.toLowerCase().includes(filter));
-      lista.innerHTML = filtrirani.map(s => `
-        <div class="kartica">
-          <b>${s.naziv} ${s.hitno? '🚨' : ''}</b><br>
-          <small><b>Prva pomoć:</b> ${s.prvaPomoc}</small><br>
-          <small><b>Upozorenje:</b> ${s.upozorenje}</small>
-        </div>
-      `).join('') || '<p style="text-align:center;color:#888;">Nema rezultata.</p>';
-    }
+  if (jeImaoMatch) {
+    pacijent = jeImaoMatch[1].trim();
+    simptomTekst = jeImaoMatch[2].trim();
+  } else if (crtaMatch) {
+    pacijent = crtaMatch[1].trim();
+    simptomTekst = crtaMatch[2].trim();
+  }
 
-    function dodajLog(negovatelj, pacijent, tekst, hitno = false) {
-      const vreme = new Date().toLocaleTimeString('sr-RS');
-      const log = { vreme, negovatelj, pacijent, tekst, hitno, timestamp: Date.now() };
+  alertBox.style.display = 'none';
+  const simptomLower = simptomTekst.toLowerCase();
+  let nadjen = null;
 
-      if (FIREBASE_AKTIVAN) {
-        database.ref('dnevnik').push(log);
-      } else {
-        devLogovi.push(log);
-        const logDiv = document.getElementById('log-area');
-        if (logDiv.innerText === 'Dnevnik je prazan.') logDiv.innerHTML = '';
-        const entry = document.createElement('div');
-        entry.className = 'log-entry' + (hitno? ' alert' : '');
-        entry.innerHTML = `<b>[${vreme}]</b> <span class="negovatelj">Negovatelj: ${negovatelj}</span> | <span class="pacijent">Pacijent: ${pacijent}</span> | ${tekst}`;
-        logDiv.prepend(entry);
-      }
-    }
-
-    function izvršiProtokol() {
-      const negovatelj = document.getElementById('nurse-name').value.trim();
-      const unos = document.getElementById('patient-input').value.trim();
-      const alertBox = document.getElementById('the-alert');
-
-      if (!negovatelj) {
-        alertBox.style.display = 'block';
-        alertBox.style.borderColor = '#ff9800';
-        alertBox.style.background = '#fff3e0';
-        alertBox.innerHTML = '<b>GREŠKA:</b> Moraš upisati ime negovatelja!';
-        return;
-      }
-      if (!unos) {
-        alertBox.style.display = 'block';
-        alertBox.style.borderColor = '#ff9800';
-        alertBox.style.background = '#fff3e0';
-        alertBox.innerHTML = '<b>GREŠKA:</b> Opiši pacijenta i simptom!';
-        return;
-      }
-
-      // Parsiranje: "Milan je imao pritisak 180" ili "Milan - pritisak 180" ili "Milan, pritisak 180"
-      let pacijent = "Nepoznat";
-      let simptomTekst = unos;
-
-      const jeImaoMatch = unos.match(/^(.+?)\s+je\s+imao\s+(.+)$/i);
-      const crtaMatch = unos.match(/^(.+?)\s*[-,]\s*(.+)$/);
-
-      if (jeImaoMatch) {
-        pacijent = jeImaoMatch[1].trim();
-        simptomTekst = jeImaoMatch[2].trim();
-      } else if (crtaMatch) {
-        pacijent = crtaMatch[1].trim();
-        simptomTekst = crtaMatch[2].trim();
-      }
-
-      alertBox.style.display = 'none';
-      let nadjen = null;
-      const simptomLower = simptomTekst.toLowerCase();
-
-      const pritisakMatch = simptomLower.match(/pritisak\s*(\d+)/);
-      if (pritisakMatch) {
-        const vrednost = parseInt(pritisakMatch[1]);
-        if (vrednost >= 200) {
-          nadjen = devSimptomi.find(s => s.naziv === "Pritisak hitno");
-        } else if (vrednost < 90) {
-          nadjen = devSimptomi.find(s => s.naziv === "Nizak pritisak");
-        } else if (vrednost >= 160) {
-          nadjen = devSimptomi.find(s => s.naziv === "Pritisak");
-        } else if (vrednost >= 90 && vrednost <= 140) {
-          alertBox.style.display = 'block';
-          alertBox.style.borderColor = '#4caf50';
-          alertBox.style.background = '#e8f5e9';
-          alertBox.innerHTML = `<b>INFO:</b> Izmeren pritisak ${vrednost} je u granicama normale.<br>Nastavi sa praćenjem.`;
-          dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - normalan nalaz`);
-          document.getElementById('patient-input').value = '';
-          return;
-        } else {
-          alertBox.style.display = 'block';
-          alertBox.style.borderColor = '#ff9800';
-          alertBox.style.background = '#fff3e0';
-          alertBox.innerHTML = `<b>NAPOMENA:</b> Pritisak ${vrednost} je blago povišen.<br>Odmori 15min pa ponovi merenje. Ako ostane povišen, konsultuj sestru.`;
-          dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - blago povišen`);
-          document.getElementById('patient-input').value = '';
-          return;
-        }
-      } else {
-        nadjen = devSimptomi.find(s => simptomLower.includes(s.naziv.toLowerCase()));
-      }
-
-      if (nadjen) {
-        alertBox.style.display = 'block';
-        if (nadjen.hitno) {
-          alertBox.style.borderColor = '#e53935';
-          alertBox.style.background = '#ffebee';
-        } else {
-          alertBox.style.borderColor = '#ff9800';
-          alertBox.style.background = '#fff3e0';
-        }
-        alertBox.innerHTML = `
-          <b>PACIJENT: ${pacijent}</b><br>
-          <b>SIMPTOM: ${nadjen.naziv}</b><br><br>
-          <b>PRVA POMOĆ:</b><br>${nadjen.prvaPomoc}<br><br>
-          <b>UPOZORENJE:</b><br>${nadjen.upozorenje}
-        `;
-        dodajLog(negovatelj, pacijent, `${nadjen.naziv} - ${simptomTekst}`, nadjen.hitno);
-      } else {
-        alertBox.style.display = 'block';
-        alertBox.style.borderColor = '#ff9800';
-        alertBox.style.background = '#fff3e0';
-        alertBox.innerHTML = '<b>NAPOMENA:</b> Simptom nije pronađen u bazi. Proveri unos ili dodaj u Bazu znanja.';
-        dodajLog(negovatelj, pacijent, `Nepoznat simptom - ${simptomTekst}`);
-      }
+  const pritisakMatch = simptomLower.match(/pritisak\s*(\d+)/);
+  if (pritisakMatch) {
+    const vrednost = parseInt(pritisakMatch[1]);
+    if (vrednost >= 200) {
+      nadjen = devSimptomi.find(s => s.naziv === "Pritisak hitno");
+    } else if (vrednost < 90) {
+      nadjen = devSimptomi.find(s => s.naziv === "Nizak pritisak");
+    } else if (vrednost >= 160) {
+      nadjen = devSimptomi.find(s => s.naziv === "Pritisak");
+    } else if (vrednost >= 90 && vrednost <= 140) {
+      alertBox.style.display = 'block';
+      alertBox.style.borderColor = '#4caf50';
+      alertBox.style.background = '#e8f5e9';
+      alertBox.innerHTML = `<b>INFO:</b> Izmeren pritisak ${vrednost} je u granicama normale.<br>Nastavi sa praćenjem.`;
+      dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - normalan nalaz`);
       document.getElementById('patient-input').value = '';
+      return;
+    } else {
+      alertBox.style.display = 'block';
+      alertBox.style.borderColor = '#ff9800';
+      alertBox.style.background = '#fff3e0';
+      alertBox.innerHTML = `<b>NAPOMENA:</b> Pritisak ${vrednost} je blago povišen.<br>Odmori 15min pa ponovi merenje. Ako ostane povišen, konsultuj sestru.`;
+      dodajLog(negovatelj, pacijent, `Pritisak ${vrednost} - blago povišen`);
+      document.getElementById('patient-input').value = '';
+      return;
+    }
+  } else {
+    nadjen = nadjiSimptom(simptomTekst);
+  }
+
+  if (nadjen) {
+    alertBox.style.display = 'block';
+    if (nadjen.hitno) {
+      alertBox.style.borderColor = '#e53935';
+      alertBox.style.background = '#ffebee';
+    } else {
+      alertBox.style.borderColor = '#ff9800';
+      alertBox.style.background = '#fff3e0';
+    }
+    alertBox.innerHTML = `
+      <b>PACIJENT: ${pacijent}</b><br>
+      <b>SIMPTOM: ${nadjen.naziv}</b><br><br>
+      <b>PRVA POMOĆ:</b><br>${nadjen.prvaPomoc}<br><br>
+      <b>UPOZORENJE:</b><br>${nadjen.upozorenje}
+    `;
+    dodajLog(negovatelj, pacijent, `${nadjen.naziv} - ${simptomTekst}`, nadjen.hitno);
+  } else {
+    alertBox.style.display = 'block';
+    alertBox.style.borderColor = '#ff9800';
+    alertBox.style.background = '#fff3e0';
+    alertBox.innerHTML = '<b>NAPOMENA:</b> Simptom nije pronađen u bazi. Evidentirano u dnevnik.';
+    dodajLog(negovatelj, pacijent, `Nepoznat simptom - ${simptomTekst}`);
+  }
+  document.getElementById('patient-input').value = '';
     }
 
     function viberProtokol() {

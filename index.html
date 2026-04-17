@@ -105,7 +105,15 @@ let devLogovi = [];
 let devSimptomi = [
   { naziv: "Dijareja", alias: ["dijareja", "diarea", "proliv", "tečna stolica"], prvaPomoc: "1. Popij odmah 2 kapsule Loperamida od 2mg. 2. Posle svake sledeće tečne stolice popij još 1 kapsulu. 3. Pij dosta vode, čaja ili supe.", upozorenje: "NE UZIMAJ ako imaš temperaturu >38°C ili krv u stolici.", hitno: false },
   { naziv: "Pritisak hitno", alias: ["pritisak", "visok pritisak", "hipertenzija"], prvaPomoc: "Prekini sve aktivnosti. Sedi ili lezi. Pozovi dežurnu sestru.", upozorenje: "OBAVEZNO MERENJE: >180/120 mmHg. Ako je glavobolja jaka ili ima mučnine, ZOVI HITNU.", hitno: true },
-  { naziv: "Mrtav ladan", alias: ["mrtav ladan", "smrt", "preminuo"], prvaPomoc: "NE DIRAJ pacijenta! Odmah pozovi hitnu 019/547-124 i pitaj za dežurnog mrtvozornika.", upozorenje: "Imaj pri ruci adresu i broj pogrebne službe.", hitno: true }
+  { naziv: "Mrtav ladan", alias: ["mrtav ladan", "smrt", "preminuo"], prvaPomoc: "NE DIRAJ pacijenta! Odmah pozovi hitnu 019/547-124 i pitaj za dežurnog mrtvozornika.", upozorenje: "Imaj pri ruci adresu i broj pogrebne službe.", hitno: true },
+  { naziv: "Bol u grudima", alias: ["bol u grudima", "srce boli", "angina", "infarkt"], prvaPomoc: "1. Sedi ili lezi. 2. Popij 1 tabletu Nitroglicerina pod jezik (ako ima). 3. Otvori prozor.", upozorenje: "Ako bol traje >5 min ili ima znojenja, ZOVI HITNU ODMAH.", hitno: true },
+  { naziv: "Mučnina i povraćanje", alias: ["mučnina", "povraćanje", "vraćanje"], prvaPomoc: "1. Popij 1 tabletu Klometola 10mg. 2. Ne jedi ništa 1h. 3. Pij vodu u gutljajima.", upozorenje: "Ako traje >2h ili ima krvi u povraćenom, ZOVI SESTRU.", hitno: false },
+  { naziv: "Temperatura", alias: ["temperatura", "fever", "vrućica"], prvaPomoc: "1. Popij 1 tabletu Paracetamola 500mg. 2. Pij dosta tečnosti. 3. Ohladi se vlažnom oblogom.", upozorenje: "Ako >39°C ili traje >3 dana, ZOVI SESTRU.", hitno: false },
+  { naziv: "Zatvor", alias: ["zatvor", "opstipacija", "tvrda stolica"], prvaPomoc: "1. Popij 1 kašiku laktuloze. 2. Pij dosta vode. 3. Lagana fizička aktivnost.", upozorenje: "Ako traje >3 dana ili ima krvi, ZOVI SESTRU.", hitno: false },
+  { naziv: "Dekubiti", alias: ["dekubiti", "prtlježnice", "ranice"], prvaPomoc: "1. Okreni pacijenta na stranu. 2. Očisti kožu blakim sapunom. 3. Nanos hidrogel.", upozorenje: "Ako ima infekcije (crvenilo, gnoj), ZOVI SESTRU ODMAH.", hitno: false },
+  { naziv: "Glavobolja", alias: ["glavobolja", "migrena", "bol u glavi"], prvaPomoc: "1. Popij 1 tabletu Paracetamola 500mg. 2. Odmori u mraku. 3. Pij dosta vode.", upozorenje: "Ako traje >24h ili ima mučnine, ZOVI SESTRU.", hitno: false },
+  { naziv: "Bolovi u želudcu", alias: ["bolovi u želudcu", "stomak boli", "želučani problemi", "želudac"], prvaPomoc: "1. Popij 1 tabletu Ranitidina 150mg. 2. Ne jedi začinjeno. 3. Odmori.", upozorenje: "Ako traje >2h ili ima krvi u stolici, ZOVI SESTRU.", hitno: false },
+  { naziv: "Bolovi u leđima", alias: ["bolovi u leđima", "bolovi u kostima", "mišićni bol", "leđa"], prvaPomoc: "1. Popij 1 tabletu Diklofenaka 50mg. 2. Stavi toplu oblogu. 3. Lagano rastezanje.", upozorenje: "Ako traje >3 dana ili ima slabosti u nogama, ZOVI SESTRU.", hitno: false }
 ];
 
 const logArea = document.getElementById('log-area');
@@ -297,4 +305,4 @@ function sačuvajSimptom() {
 loadData();
 </script>
 </body>
-  </html>
+</html>

@@ -256,7 +256,66 @@ function izvršiProtokol() {
     theAlert.style.display = 'block';
     patientInput.value = "";
       }
+function viberProtokol() {
+  const nurse = nurseInput.value.trim();
+  if (!nurse) { alert("Unesi IME NEGOVATELJA!"); return; }
 
+  const sada = new Date();
+  const trenutniSat = sada.getHours();
+  let pocetakSmene = new Date();
+  let nazivSmene = "";
+
+  // 1. Određujemo koja je smena i kada je počela
+  if (trenutniSat >= 7 && trenutniSat < 19) {
+    nazivSmene = "DNEVNA SMENA";
+    pocetakSmene.setHours(7, 0, 0, 0);
+  } else {
+    nazivSmene = "NOĆNA SMENA";
+    pocetakSmene.setHours(19, 0, 0, 0);
+    if (trenutniSat < 7) {
+      pocetakSmene.setDate(pocetakSmene.getDate() - 1);
+    }
+  }
+
+  // Pomoćna funkcija za pretvaranje teksta iz baze ("DD.MM.GGGG. ČČ:MM:SS") u JS Datum
+  function pretvoriLogUDatum(vremeTekst) {
+    const delovi = vremeTekst.split(' ');
+    const datumDelovi = delovi[0].split('.');
+    const vremeDelovi = delovi[1].split(':');
+    return new Date(datumDelovi[2], datumDelovi[1] - 1, datumDelovi[0], vremeDelovi[0], vremeDelovi[1], vremeDelovi[2]);
+  }
+
+  // 2. Filtriramo logove koji pripadaju ovoj smeni
+  const smenskiLogovi = devLogovi.filter(log => {
+    const logDatum = pretvoriLogUDatum(log.vreme);
+    return logDatum >= pocetakSmene && logDatum <= sada;
+  });
+
+  // 3. Sastavljamo tekst poruke
+  const datumFormat = pocetakSmene.toLocaleDateString('sr-RS') + ".";
+  let poruka = `*${nazivSmene} - DOM LELA I FRANC*\n`;
+  poruka += `*Datum:* ${datumFormat}\n`;
+  poruka += `*Izveštaj poslao/la:* ${nurse}\n`;
+  poruka += `----------------------------------------\n\n`;
+
+  if (smenskiLogovi.length === 0) {
+    // Ako nema unosa, generiše se standardni izveštaj o mirnoj smeni
+    poruka += `Smena protekla mirno, svi korisnici u redu, smena odrađena po propisu.\n\n`;
+  } else {
+    // Ako ima unosa, pakujemo ih hronološki
+    smenskiLogovi.forEach(log => {
+      const satnica = log.vreme.split(' ')[1].substring(0, 5);
+      const hitnoZnak = log.tip === "alert" ? "🚨 " : "🕒 ";
+      poruka += `${hitnoZnak}*${satnica}* - ${log.pacijent}: ${log.tekst} (Uneo/la: ${log.nurse})\n\n`;
+    });
+  }
+
+  poruka += `----------------------------------------\nPoslato iz aplikacije Digitalni Izveštaj.`;
+
+  // 4. Slanje na Viber
+  window.open(`viber://forward?text=${encodeURIComponent(poruka)}`, '_blank');
+                          }
+  
 function registrujHitnu() {
   const nurse = nurseInput.value.trim();
   if (!nurse) { alert("Unesi IME NEGOVATELJA pre poziva hitne!"); return; }
@@ -273,26 +332,7 @@ function registrujHitnu() {
 }
 
 
-function viberProtokol() {
-  const nurse = nurseInput.value.trim();
-  if (!nurse) { alert("Unesi IME NEGOVATELJA!"); return; }
-  const unos = patientInput.value.trim();
-  if (!unos) { alert("Unesi PACIJENTA I SIMPTOM!"); return; }
 
-  const { pacijent, simptom } = parsirajUnos(unos);
-  const vreme = new Date().toLocaleString('sr-RS');
-  const logTekst = `Poslato na Viber - ${simptom}`;
-
-  devLogovi.push({ vreme, nurse, pacijent, tekst: logTekst, tip: "info" });
-  saveData();
-  prikaziLog();
-
-  let poruka = `*DIGITALNI IZVEŠTAJ - DOM LELA I FRANC*\n\n`;
-  poruka += `*Datum:* ${vreme}\n*Negovatelj:* ${nurse}\n*Pacijent:* ${pacijent}\n*Simptom:* ${simptom}\n\n`;
-  poruka += `Poslato iz aplikacije Digitalni Izveštaj.`;
-
-  window.open(`viber://forward?text=${encodeURIComponent(poruka)}`, '_blank');
-}
 
 function obrišiSve() {
   if (confirm("Da li ste sigurni da želite da obrišete ceo dnevnik? Ova akcija je nepovratna!")) {

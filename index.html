@@ -264,7 +264,19 @@ function viberProtokol() {
   const trenutniSat = sada.getHours();
   let pocetakSmene = new Date();
   let nazivSmene = "";
+  let pocetakSmene = new Date();
+  let nazivSmene = "";
 
+  function pretvoriLogUDatum(vremeTekst) {
+    const cistTekst = vremeTekst.replace(/\.\s/g, '.');
+    const delovi = cistTekst.split(' ');
+    const datumDelovi = delovi[0].split('.');
+    const vremeDelovi = delovi[1].split(':');
+    return new Date(datumDelovi[2], datumDelovi[1] - 1, datumDelovi[0], vremeDelovi[0], vremeDelovi[1], vremeDelovi[2]);
+  }
+
+  // 1. Određujemo koja je smena i kada je počela
+  
   // 1. Određujemo koja je smena i kada je počela
   if (trenutniSat >= 7 && trenutniSat < 19) {
     nazivSmene = "DNEVNA SMENA";

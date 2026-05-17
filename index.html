@@ -268,10 +268,10 @@ function registrujHitnu() {
   saveData();
   prikaziLog();
 
-  theAlert.innerHTML = `<b style="color:#e53935;">REGISTROVANO POZIVANJE HITNE POMOĆI</b><br>Negovatelj: ${nurse}<br>Pacijent: ${pacijent}<br><br>Pozovi: <a href="tel:019547124">019/547-124</a>`;
-  theAlert.style.display = 'block';
-  alert(`Registrovano pozivanje hitne pomoći za: ${pacijent}.\nPozovi 019/547-124!`);
+  // Telefon odmah pokreće poziv čim se klikne na dugme
+  window.location.href = "tel:019547124";
 }
+
 
 function viberProtokol() {
   const nurse = nurseInput.value.trim();

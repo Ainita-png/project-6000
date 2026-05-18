@@ -265,7 +265,7 @@ function viberProtokol() {
   let pocetakSmene = new Date();
   let nazivSmene = "";
 
-  // Pomoćna funkcija za pretvaranje teksta iz baze u JS Datum
+  // Pomoćna funkcija koja tačno čisti razmake iz datuma
   function pretvoriLogUDatum(vremeTekst) {
     const cistTekst = vremeTekst.replace(/\.\s/g, '.');
     const delovi = cistTekst.split(' ');
@@ -291,35 +291,6 @@ function viberProtokol() {
     const logDatum = pretvoriLogUDatum(log.vreme);
     return logDatum >= pocetakSmene && logDatum <= sada;
   });
-  
-
-  // 1. Određujemo koja je smena i kada je počela
-  
-  // 1. Određujemo koja je smena i kada je počela
-  if (trenutniSat >= 7 && trenutniSat < 19) {
-    nazivSmene = "DNEVNA SMENA";
-    pocetakSmene.setHours(7, 0, 0, 0);
-  } else {
-    nazivSmene = "NOĆNA SMENA";
-    pocetakSmene.setHours(19, 0, 0, 0);
-    if (trenutniSat < 7) {
-      pocetakSmene.setDate(pocetakSmene.getDate() - 1);
-    }
-  }
-
-  // Pomoćna funkcija za pretvaranje teksta iz baze ("DD.MM.GGGG. ČČ:MM:SS") u JS Datum
-  function pretvoriLogUDatum(vremeTekst) {
-    const delovi = vremeTekst.split(' ');
-    const datumDelovi = delovi[0].split('.');
-    const vremeDelovi = delovi[1].split(':');
-    return new Date(datumDelovi[2], datumDelovi[1] - 1, datumDelovi[0], vremeDelovi[0], vremeDelovi[1], vremeDelovi[2]);
-  }
-
-  // 2. Filtriramo logove koji pripadaju ovoj smeni
-  const smenskiLogovi = devLogovi.filter(log => {
-    const logDatum = pretvoriLogUDatum(log.vreme);
-    return logDatum >= pocetakSmene && logDatum <= sada;
-  });
 
   // 3. Sastavljamo tekst poruke
   const datumFormat = pocetakSmene.toLocaleDateString('sr-RS') + ".";
@@ -329,10 +300,8 @@ function viberProtokol() {
   poruka += `----------------------------------------\n\n`;
 
   if (smenskiLogovi.length === 0) {
-    // Ako nema unosa, generiše se standardni izveštaj o mirnoj smeni
     poruka += `Smena protekla mirno, svi korisnici u redu, smena odrađena po propisu.\n\n`;
   } else {
-    // Ako ima unosa, pakujemo ih hronološki
     smenskiLogovi.forEach(log => {
       const satnica = log.vreme.split(' ')[1].substring(0, 5);
       const hitnoZnak = log.tip === "alert" ? "🚨 " : "🕒 ";
@@ -344,7 +313,8 @@ function viberProtokol() {
 
   // 4. Slanje na Viber
   window.open(`viber://forward?text=${encodeURIComponent(poruka)}`, '_blank');
-                          }
+  }
+    
   
 function registrujHitnu() {
   const nurse = nurseInput.value.trim();
